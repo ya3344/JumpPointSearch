@@ -2,7 +2,6 @@
 
 extern HWND gHWnd;
 extern RECT gWindowRect;
-extern bool gIsNodeTrade;
 
 enum eTileIndex
 {

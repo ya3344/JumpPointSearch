@@ -41,9 +41,6 @@ bool JumpPointSearch::AStarStart(const WORD startIndex, const WORD finishIndex, 
 	Release();
 	
 	return FindRoute(tileList);
-
-	//if (mBestRoadSpace.empty())
-	//	return false;
 }
 
 bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
@@ -226,23 +223,20 @@ JumpPointSearch::AStarNodeInfo* JumpPointSearch::CreateNode(AStarNodeInfo* paren
 	F = G + H;
 
 	// 기존에 오프리스트에 있는 노드와 비교하여 대체 진행
-	if (true == gIsNodeTrade)
+	for (AStarNodeInfo* pNode : mOpenList)
 	{
-		for (AStarNodeInfo* pNode : mOpenList)
+		if (pNode->index == index)
 		{
-			if (pNode->index == index)
+			// G 가 더적기 때문에 G 및 부모 교체
+			if (G < pNode->G)
 			{
-				// G 가 더적기 때문에 G 및 부모 교체
-				if (G < pNode->G)
-				{
-					pNode->G = G;
-					pNode->parent = parent;
-					return nullptr;
-				}
-				else
-				{
-					return nullptr;
-				}
+				pNode->G = G;
+				pNode->parent = parent;
+				return nullptr;
+			}
+			else
+			{
+				return nullptr;
 			}
 		}
 	}
@@ -270,15 +264,6 @@ bool JumpPointSearch::CheckList(const WORD index)
 			return false;
 	}
 
-	if (false == gIsNodeTrade)
-	{
-		for (const AStarNodeInfo* pNode : mOpenList)
-		{
-			if (pNode->index == index)
-				return false;
-		}
-	}
-
 	return true;
 }
 
@@ -295,9 +280,4 @@ void JumpPointSearch::Release(void)
 
 	for_each(mCloseList.begin(), mCloseList.end(), SafeDelete<AStarNodeInfo*>);
 	mCloseList.clear();
-	
-	while (mBestRoadSpace.empty() == false)
-	{
-		mBestRoadSpace.pop();
-	}
 }

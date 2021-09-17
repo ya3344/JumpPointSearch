@@ -1,7 +1,6 @@
 #pragma once
 
 class Visualization;
-//#define NODE_TRADE
 
 class JumpPointSearch
 {
@@ -35,7 +34,6 @@ private:
 
 public:
 	bool Initialize(const WORD tile_MaxNumX, const WORD tile_MaxNumY);
-	std::stack<AStarNodeInfo*>& GetBesRoadSpace(void) { return mBestRoadSpace; }
 	void Release(void);
 
 public:
@@ -50,7 +48,6 @@ private:
 private:
 	list<AStarNodeInfo*> mOpenList;
 	list<AStarNodeInfo*> mCloseList;
-	stack<AStarNodeInfo*> mBestRoadSpace;
 
 private:
 	WORD mStartIndex = 0;

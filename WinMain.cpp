@@ -251,12 +251,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 gVisualization.SetBlockIndexClear();
             }
             break;
-        case WM_MBUTTONUP:
-            {
-                gIsNodeTrade = !gIsNodeTrade;
-                wprintf(L"gIsNodeTrade: %d\n", gIsNodeTrade);
-            }
-            break;
         case WM_PAINT:
             {
                 PAINTSTRUCT ps;
