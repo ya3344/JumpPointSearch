@@ -24,7 +24,7 @@ struct RectInfo
 {
 	POINT point;
 	BYTE nodeIndex;
-	float G = 0.f;
+	WORD G = 0;
 	WORD H = 0;
-	float F = 0.f;
+	WORD F = 0;
 };

@@ -21,6 +21,7 @@ bool Visualization::Initialize()
 
 	//AStar Class วาด็
 	mJumpPointSearch = new JumpPointSearch(this);
+	_ASSERT(mJumpPointSearch != nullptr);
 
 	mRect = { -RECT_SIZE, -RECT_SIZE, RECT_SIZE, RECT_SIZE };
 	mTile_MaxNumX = WINDOW_WIDTH / RECT_SIZE;
@@ -33,6 +34,8 @@ bool Visualization::Initialize()
 		for (WORD j = 1; j <= mTile_MaxNumX; ++j)
 		{
 			rectInfo = new RectInfo;
+			_ASSERT(rectInfo != nullptr);
+
 			rectInfo->point.x = j * RECT_SIZE;
 			rectInfo->point.y = i * RECT_SIZE;
 			rectInfo->nodeIndex = NORMAL_INDEX;
@@ -139,10 +142,10 @@ void Visualization::DrawTile(HDC hdc)
 					RECT tempRect;
 					tempRect = textRect;
 					tempRect.top = (LONG)(textRect.top - (RECT_SIZE * 0.7f));
-					swprintf_s(inputText, _countof(inputText), L"%0.1f   %d", rectInfo->G, rectInfo->H);
+					swprintf_s(inputText, _countof(inputText), L"%d   %d", rectInfo->G, rectInfo->H);
 					DrawText(hdc, inputText, -1, &tempRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 					tempRect.top = (LONG)(textRect.top + (RECT_SIZE * 0.7f));
-					swprintf_s(inputText, _countof(inputText), L"%0.1f", rectInfo->F);
+					swprintf_s(inputText, _countof(inputText), L"%d", rectInfo->F);
 					DrawText(hdc, inputText, -1, &tempRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 				}
 #endif

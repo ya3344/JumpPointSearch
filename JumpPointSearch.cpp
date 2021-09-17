@@ -50,26 +50,34 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 	WORD index = 0;
 	WORD finishCount = 0;
 
-	// 여덟 방향을 조사한다.
-	AStarNodeInfo* parent = new AStarNodeInfo(0.f, 0.f, mStartIndex, nullptr);
+	AStarNodeInfo* parent = new AStarNodeInfo(0, 0, mStartIndex, nullptr);
 	mCloseList.emplace_back(parent);
 	
 	while (true)
 	{
-		if (count >= MAX_NODE_COUNT)
+		/*if (count >= MAX_NODE_COUNT)
 		{
 			wprintf(L"MAX_NODE_COUNT ERROR!");
 			Release();
 			return false;
-		}
+		}*/
+		// 부모가 없을 경우 전체 8방향 검색 시작
+		if (parent->parent)
+		{
 
+		}
+		// 부모가 있을 경우
+		else
+		{
+
+		}
 		// 위
 		index = parent->index - mTile_MaxNumX;
 
 		if (parent->index >= mTile_MaxNumX && tileList[index]->nodeIndex != BLOCK_INDEX
 			&& CheckList(index))
 		{
-			node = CreateNode(parent, index, false, tileList);
+			node = CreateNode(parent, index, tileList);
 			if(node != nullptr)
 				mOpenList.emplace_back(node);
 		}
@@ -80,7 +88,7 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 		if (parent->index >= mTile_MaxNumX && (parent->index % mTile_MaxNumX) != mTile_MaxNumX - 1
 			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
 		{
-			node = CreateNode(parent, index, true, tileList);
+			node = CreateNode(parent, index, tileList);
 			if (node != nullptr)
 				mOpenList.emplace_back(node);
 		}
@@ -91,7 +99,7 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 		if ((parent->index % mTile_MaxNumX) != mTile_MaxNumX - 1
 			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
 		{
-			node = CreateNode(parent, index, false, tileList);
+			node = CreateNode(parent, index, tileList);
 			if (node != nullptr)
 				mOpenList.emplace_back(node);
 		}
@@ -102,7 +110,7 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 		if ((parent->index / mTile_MaxNumX) < mTile_MaxNumY - 1  && (parent->index % mTile_MaxNumX) != mTile_MaxNumX - 1
 			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
 		{
-			node = CreateNode(parent, index, true, tileList);
+			node = CreateNode(parent, index, tileList);
 			if (node != nullptr)
 				mOpenList.emplace_back(node);
 		}
@@ -113,7 +121,7 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 		if ((parent->index / mTile_MaxNumX) < mTile_MaxNumY - 1
 			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
 		{
-			node = CreateNode(parent, index, false, tileList);
+			node = CreateNode(parent, index, tileList);
 			if (node != nullptr)
 				mOpenList.emplace_back(node);
 		}
@@ -124,7 +132,7 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 		if ((parent->index / mTile_MaxNumX) < mTile_MaxNumY - 1 && (parent->index % mTile_MaxNumX) > 0
 			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
 		{
-			node = CreateNode(parent, index, true, tileList);
+			node = CreateNode(parent, index, tileList);
 			if (node != nullptr)
 				mOpenList.emplace_back(node);
 		}
@@ -135,7 +143,7 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 		if ((parent->index % mTile_MaxNumX) > 0
 			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
 		{
-			node = CreateNode(parent, index, false, tileList);
+			node = CreateNode(parent, index, tileList);
 			if (node != nullptr)
 				mOpenList.emplace_back(node);
 		}
@@ -145,7 +153,7 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 		if ((parent->index % mTile_MaxNumX) > 0 && parent->index >= mTile_MaxNumX
 			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
 		{
-			node = CreateNode(parent, index, true, tileList);
+			node = CreateNode(parent, index, tileList);
 			if (node != nullptr)
 				mOpenList.emplace_back(node);
 		}
@@ -198,26 +206,23 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 	return true;
 }
 
-JumpPointSearch::AStarNodeInfo* JumpPointSearch::CreateNode(AStarNodeInfo* parent, const WORD index, const bool isDiagonal, vector<RectInfo*>& tileList)
+JumpPointSearch::AStarNodeInfo* JumpPointSearch::CreateNode(AStarNodeInfo* parent, const WORD index, vector<RectInfo*>& tileList)
 {
-	// Manhattan 방식 사용하여 H(현재 사각형에서 목적지 비용 계산)
 	//Sleep(50);
-	WORD dx = (WORD)(abs(tileList[mFinishIndex]->point.x - tileList[index]->point.x)) / RECT_SIZE;
-	WORD dy = (WORD)(abs(tileList[mFinishIndex]->point.y - tileList[index]->point.y)) / RECT_SIZE;
-	// H 비중을 높여서 똑같은 수치인 노드인 경우 가까운 노드를 우선으로 선택되도록 작업
-	WORD H = (dx + dy); 
-	float G;
-	float F;
+	WORD dx = 0;
+	WORD dy = 0;
+	WORD H = 0;
+	WORD G = 0;
+	WORD F = 0;
+	// Manhattan 방식 사용하여 G(부모 사각형에서 노드 비용 계산)
+	dx = (WORD)(abs(tileList[parent->index]->point.x - tileList[index]->point.x)) / RECT_SIZE;
+	dy = (WORD)(abs(tileList[parent->index]->point.y - tileList[index]->point.y)) / RECT_SIZE;
+	G = (dx + dy);
 
-	if (true == isDiagonal)
-	{
-		// 대각선 이동은 비용을 추가로 할당함.
-		G = parent->G + 1.5f;
-	}
-	else
-	{
-		G = parent->G + 1.f;
-	}
+	// Manhattan 방식 사용하여 H(현재 사각형에서 목적지 비용 계산)
+	dx = (WORD)(abs(tileList[mFinishIndex]->point.x - tileList[index]->point.x)) / RECT_SIZE;
+	dy = (WORD)(abs(tileList[mFinishIndex]->point.y - tileList[index]->point.y)) / RECT_SIZE;
+	H = (dx + dy); 
 
 	// 현재까지 이동하는데 걸린 비용과 예상 비용을 합친 총 비용
 	F = G + H;
