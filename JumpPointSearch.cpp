@@ -47,24 +47,90 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 {
 	AStarNodeInfo* node = nullptr;
 	WORD count = 0;
-	WORD index = 0;
+	short index = 0;
+	short findIndex = 0;
 	WORD finishCount = 0;
-
+	BYTE cornerCount = 0;
 	AStarNodeInfo* parent = new AStarNodeInfo(0, 0, mStartIndex, nullptr);
 	mCloseList.emplace_back(parent);
 	
 	while (true)
 	{
-		/*if (count >= MAX_NODE_COUNT)
-		{
-			wprintf(L"MAX_NODE_COUNT ERROR!");
-			Release();
-			return false;
-		}*/
 		// 부모가 없을 경우 전체 8방향 검색 시작
-		if (parent->parent)
+		if (nullptr == parent->parent)
 		{
+			index = parent->index;
+			// 업
+			while (true)
+			{
+				// 장애물이 있으면 리턴처리
+				index = index - mTile_MaxNumX;
+				cornerCount = 0;
+				// 위쪽으로 더이상 갈 수 없음
+				if (index < 0)
+					break;
 
+				if (tileList[index]->nodeIndex == BLOCK_INDEX)
+					break;
+
+				// 목적지 검색
+				if (index == mFinishIndex)
+				{
+					node = CreateNode(parent, index, tileList);
+					if (node != nullptr)
+						mOpenList.emplace_back(node);
+
+					break;
+				}
+
+				// 코너 찾기
+				findIndex = index - mTile_MaxNumX;
+				// 위쪽으로 더이상 갈 수 없음
+				if (findIndex < 0)
+					break;
+
+				if (tileList[findIndex]->nodeIndex == BLOCK_INDEX)
+					break;
+
+				// 목적지 검색
+				if (findIndex == mFinishIndex)
+				{
+					node = CreateNode(parent, findIndex, tileList);
+					if (node != nullptr)
+						mOpenList.emplace_back(node);
+
+					break;
+				}
+				
+				// 오른쪽 코너 체크
+				if ((index + 1) % mTile_MaxNumX != mTile_MaxNumX - 1)
+				{
+					// 코너로 판단
+					if (BLOCK_INDEX == tileList[index + 1]->nodeIndex  && NORMAL_INDEX == tileList[findIndex + 1]->nodeIndex)
+					{
+						++cornerCount;
+					}
+				}
+				// 왼쪽 코너 체크
+				if ((index - 1) % mTile_MaxNumX > 0)
+				{
+					// 코너로 판단
+					if (BLOCK_INDEX == tileList[index - 1]->nodeIndex  && NORMAL_INDEX == tileList[findIndex - 1]->nodeIndex)
+					{
+						++cornerCount;
+					}
+				}
+
+				if (cornerCount > 0)
+				{
+					node = CreateNode(parent, index, tileList);
+					if (node != nullptr)
+						mOpenList.emplace_back(node);
+
+					break;
+				}
+				
+			}
 		}
 		// 부모가 있을 경우
 		else
@@ -72,91 +138,91 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 
 		}
 		// 위
-		index = parent->index - mTile_MaxNumX;
+		//index = parent->index - mTile_MaxNumX;
 
-		if (parent->index >= mTile_MaxNumX && tileList[index]->nodeIndex != BLOCK_INDEX
-			&& CheckList(index))
-		{
-			node = CreateNode(parent, index, tileList);
-			if(node != nullptr)
-				mOpenList.emplace_back(node);
-		}
+		//if (parent->index >= mTile_MaxNumX && tileList[index]->nodeIndex != BLOCK_INDEX
+		//	&& CheckList(index))
+		//{
+		//	node = CreateNode(parent, index, tileList);
+		//	if(node != nullptr)
+		//		mOpenList.emplace_back(node);
+		//}
 
-		// 오른쪽 위
-		index = (parent->index - mTile_MaxNumX) + 1;
+		//// 오른쪽 위
+		//index = (parent->index - mTile_MaxNumX) + 1;
 
-		if (parent->index >= mTile_MaxNumX && (parent->index % mTile_MaxNumX) != mTile_MaxNumX - 1
-			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
-		{
-			node = CreateNode(parent, index, tileList);
-			if (node != nullptr)
-				mOpenList.emplace_back(node);
-		}
+		//if (parent->index >= mTile_MaxNumX && (parent->index % mTile_MaxNumX) != mTile_MaxNumX - 1
+		//	&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
+		//{
+		//	node = CreateNode(parent, index, tileList);
+		//	if (node != nullptr)
+		//		mOpenList.emplace_back(node);
+		//}
 
-		// 오른쪽
-		index = parent->index + 1;
+		//// 오른쪽
+		//index = parent->index + 1;
 
-		if ((parent->index % mTile_MaxNumX) != mTile_MaxNumX - 1
-			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
-		{
-			node = CreateNode(parent, index, tileList);
-			if (node != nullptr)
-				mOpenList.emplace_back(node);
-		}
+		//if ((parent->index % mTile_MaxNumX) != mTile_MaxNumX - 1
+		//	&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
+		//{
+		//	node = CreateNode(parent, index, tileList);
+		//	if (node != nullptr)
+		//		mOpenList.emplace_back(node);
+		//}
 
-		// 오른쪽 아래 
-		index = (parent->index + mTile_MaxNumX) + 1;
+		//// 오른쪽 아래 
+		//index = (parent->index + mTile_MaxNumX) + 1;
 
-		if ((parent->index / mTile_MaxNumX) < mTile_MaxNumY - 1  && (parent->index % mTile_MaxNumX) != mTile_MaxNumX - 1
-			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
-		{
-			node = CreateNode(parent, index, tileList);
-			if (node != nullptr)
-				mOpenList.emplace_back(node);
-		}
+		//if ((parent->index / mTile_MaxNumX) < mTile_MaxNumY - 1  && (parent->index % mTile_MaxNumX) != mTile_MaxNumX - 1
+		//	&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
+		//{
+		//	node = CreateNode(parent, index, tileList);
+		//	if (node != nullptr)
+		//		mOpenList.emplace_back(node);
+		//}
 
-		// 아래
-		index = parent->index + mTile_MaxNumX;
+		//// 아래
+		//index = parent->index + mTile_MaxNumX;
 
-		if ((parent->index / mTile_MaxNumX) < mTile_MaxNumY - 1
-			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
-		{
-			node = CreateNode(parent, index, tileList);
-			if (node != nullptr)
-				mOpenList.emplace_back(node);
-		}
+		//if ((parent->index / mTile_MaxNumX) < mTile_MaxNumY - 1
+		//	&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
+		//{
+		//	node = CreateNode(parent, index, tileList);
+		//	if (node != nullptr)
+		//		mOpenList.emplace_back(node);
+		//}
 
-		// 왼쪽 아래
-		index = (parent->index + mTile_MaxNumX) - 1;
+		//// 왼쪽 아래
+		//index = (parent->index + mTile_MaxNumX) - 1;
 
-		if ((parent->index / mTile_MaxNumX) < mTile_MaxNumY - 1 && (parent->index % mTile_MaxNumX) > 0
-			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
-		{
-			node = CreateNode(parent, index, tileList);
-			if (node != nullptr)
-				mOpenList.emplace_back(node);
-		}
+		//if ((parent->index / mTile_MaxNumX) < mTile_MaxNumY - 1 && (parent->index % mTile_MaxNumX) > 0
+		//	&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
+		//{
+		//	node = CreateNode(parent, index, tileList);
+		//	if (node != nullptr)
+		//		mOpenList.emplace_back(node);
+		//}
 
-		// 왼쪽
-		index = parent->index - 1;
+		//// 왼쪽
+		//index = parent->index - 1;
 
-		if ((parent->index % mTile_MaxNumX) > 0
-			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
-		{
-			node = CreateNode(parent, index, tileList);
-			if (node != nullptr)
-				mOpenList.emplace_back(node);
-		}
+		//if ((parent->index % mTile_MaxNumX) > 0
+		//	&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
+		//{
+		//	node = CreateNode(parent, index, tileList);
+		//	if (node != nullptr)
+		//		mOpenList.emplace_back(node);
+		//}
 
-		// 왼쪽 위 
-		index = (parent->index - mTile_MaxNumX) - 1;
-		if ((parent->index % mTile_MaxNumX) > 0 && parent->index >= mTile_MaxNumX
-			&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
-		{
-			node = CreateNode(parent, index, tileList);
-			if (node != nullptr)
-				mOpenList.emplace_back(node);
-		}
+		//// 왼쪽 위 
+		//index = (parent->index - mTile_MaxNumX) - 1;
+		//if ((parent->index % mTile_MaxNumX) > 0 && parent->index >= mTile_MaxNumX
+		//	&& tileList[index]->nodeIndex != BLOCK_INDEX && CheckList(index))
+		//{
+		//	node = CreateNode(parent, index, tileList);
+		//	if (node != nullptr)
+		//		mOpenList.emplace_back(node);
+		//}
 
 		if (mOpenList.empty())
 		{
