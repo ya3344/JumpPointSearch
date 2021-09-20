@@ -74,7 +74,14 @@ void Visualization::DrawTile(HDC hdc)
 		{
 			case NORMAL_INDEX:
 				{
-					brush = (HBRUSH)CreateSolidBrush(RGB(255, 255, 255));
+					if (rectInfo->redColor != 0 || rectInfo->redColor != 0 || rectInfo->redColor != 0)
+					{
+						brush = (HBRUSH)CreateSolidBrush(RGB(rectInfo->redColor, rectInfo->greenColor, rectInfo->blueColor));
+					}
+					else
+					{
+						brush = (HBRUSH)CreateSolidBrush(RGB(255, 255, 255));
+					}			
 				}
 				break;
 			case BLOCK_INDEX:
@@ -102,11 +109,6 @@ void Visualization::DrawTile(HDC hdc)
 			case CLOSE_INDEX:
 				{
 					brush = (HBRUSH)CreateSolidBrush(RGB(235, 200, 0));
-				}
-				break;
-			case SEARCH_INDEX:
-				{
-					brush = (HBRUSH)CreateSolidBrush(RGB(rectInfo->redColor, rectInfo->greenColor, rectInfo->blueColor));
 				}
 				break;
 			default:
@@ -216,8 +218,13 @@ void Visualization::SetTilePicking(const RectInfo& rectInfo)
 			{
 				for (RectInfo* rectInfo : mTileList)
 				{
-					if(rectInfo->nodeIndex != BLOCK_INDEX)
+					if (rectInfo->nodeIndex != BLOCK_INDEX)
+					{
 						rectInfo->nodeIndex = NORMAL_INDEX;
+						rectInfo->redColor = 0;
+						rectInfo->greenColor = 0;
+						rectInfo->blueColor = 0;
+					}
 				}
 				mTileList[mPrevStart_TileIndex]->nodeIndex = NORMAL_INDEX;
 				mTileList[mPrevFinish_TileIndex]->nodeIndex = NORMAL_INDEX;

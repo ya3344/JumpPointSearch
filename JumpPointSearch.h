@@ -53,7 +53,6 @@ public:
 
 private:
 	bool FindRoute(vector<RectInfo*>& tileList);
-	inline void SearchCornerNode(const BYTE direction, AStarNodeInfo* parent, WORD index, vector<RectInfo*>& tileList);
 	AStarNodeInfo* CreateNode(AStarNodeInfo* parent, const WORD index, vector<RectInfo*>& tileList);
 	bool CheckList(const WORD index);
 	static bool Compare(const AStarNodeInfo* srcNode, const AStarNodeInfo* compareNode);
@@ -70,7 +69,7 @@ private:
 	bool SearchRightDown_CornerNode(AStarNodeInfo* parent, WORD index, vector<RectInfo*>& tileList);
 
 private:
-	void SearchIndexRender(const BYTE nodeIndex, const WORD index, vector<RectInfo*>& tileList);
+	void SearchIndexRender(const WORD index, vector<RectInfo*>& tileList);
 	void RandomColorSetting();
 
 private:
