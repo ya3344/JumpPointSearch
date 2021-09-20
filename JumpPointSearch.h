@@ -5,6 +5,7 @@ class Visualization;
 class JumpPointSearch
 {
 public:
+	JumpPointSearch() = delete;
 	explicit JumpPointSearch(Visualization* visualization);
 	~JumpPointSearch();
 
@@ -52,9 +53,25 @@ public:
 
 private:
 	bool FindRoute(vector<RectInfo*>& tileList);
+	inline void SearchCornerNode(const BYTE direction, AStarNodeInfo* parent, WORD index, vector<RectInfo*>& tileList);
 	AStarNodeInfo* CreateNode(AStarNodeInfo* parent, const WORD index, vector<RectInfo*>& tileList);
 	bool CheckList(const WORD index);
 	static bool Compare(const AStarNodeInfo* srcNode, const AStarNodeInfo* compareNode);
+	
+// Search Corner Node Function
+private:
+	bool SearchUp_CornerNode(AStarNodeInfo* parent, WORD index, vector<RectInfo*>& tileList, const bool isNodeCreate = true);
+	bool SearchLeft_CornerNode(AStarNodeInfo* parent, WORD index, vector<RectInfo*>& tileList, const bool isNodeCreate = true);
+	bool SearchLeftUp_CornerNode(AStarNodeInfo* parent, WORD index, vector<RectInfo*>& tileList);
+	bool SearchRight_CornerNode(AStarNodeInfo* parent, WORD index, vector<RectInfo*>& tileList, const bool isNodeCreate = true);
+	bool SearchRightUp_CornerNode(AStarNodeInfo* parent, WORD index, vector<RectInfo*>& tileList);
+	bool SearchDown_CornerNode(AStarNodeInfo* parent, WORD index, vector<RectInfo*>& tileList, const bool isNodeCreate = true);
+	bool SearchLeftDown_CornerNode(AStarNodeInfo* parent, WORD index, vector<RectInfo*>& tileList);
+	bool SearchRightDown_CornerNode(AStarNodeInfo* parent, WORD index, vector<RectInfo*>& tileList);
+
+private:
+	void SearchIndexRender(const BYTE nodeIndex, const WORD index, vector<RectInfo*>& tileList);
+	void RandomColorSetting();
 
 private:
 	list<AStarNodeInfo*> mOpenList;
@@ -68,5 +85,11 @@ private:
 
 private:
 	Visualization* mVisualization = nullptr;
+
+	// RandomColorSetting
+private:
+	BYTE mRed = 0;
+	BYTE mGreen = 0;
+	BYTE mBlue = 0;
 };
 

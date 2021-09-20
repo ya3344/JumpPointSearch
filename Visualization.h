@@ -14,6 +14,7 @@ public:
 	void SetBlockIndexClear();
 
 public:
+	void RandomColorSetting();
 	void AStarWorking();
 	void Render();
 	void RenderBitBlt();
@@ -32,11 +33,18 @@ private:
 	class JumpPointSearch* mJumpPointSearch = nullptr;
 	bool mIsAStarStart = false;
 	bool mIsMoveTo = false;
+
 //API Render 
 private:
 	HDC mhDC;
 	HDC mhMemDC;
 	HBITMAP mBitmap;
 	HBITMAP mOldBitmap;
+
+// RandomColorSetting
+private:
+	BYTE mRed;
+	BYTE mGreen;
+	BYTE mBlue;
 };
 

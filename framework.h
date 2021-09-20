@@ -12,6 +12,7 @@
 #include <memory.h>
 #include <tchar.h>
 #include <assert.h>
+#include <random>
 // STL
 #include <vector>
 #include <stack>

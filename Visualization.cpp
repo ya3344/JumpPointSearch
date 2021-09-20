@@ -18,7 +18,7 @@ bool Visualization::Initialize()
 
 	mBitmap = CreateCompatibleBitmap(mhDC, WINDOW_WIDTH, WINDOW_HEIGHT);
 	mOldBitmap = (HBITMAP)SelectObject(mhMemDC, mBitmap);
-
+	
 	//AStar Class วาด็
 	mJumpPointSearch = new JumpPointSearch(this);
 	_ASSERT(mJumpPointSearch != nullptr);
@@ -102,6 +102,11 @@ void Visualization::DrawTile(HDC hdc)
 			case CLOSE_INDEX:
 				{
 					brush = (HBRUSH)CreateSolidBrush(RGB(235, 200, 0));
+				}
+				break;
+			case SEARCH_INDEX:
+				{
+					brush = (HBRUSH)CreateSolidBrush(RGB(rectInfo->redColor, rectInfo->greenColor, rectInfo->blueColor));
 				}
 				break;
 			default:
@@ -247,6 +252,18 @@ void Visualization::SetBlockIndexClear()
 			rectInfo->nodeIndex = NORMAL_INDEX;
 	}
 	Render();
+}
+
+void Visualization::RandomColorSetting()
+{
+	// random setting
+	static random_device randDevice;
+	static mt19937_64 rand(randDevice());
+	static uniform_int_distribution<__int16> randDist(0, 255);
+
+	mRed = (BYTE)randDist(rand);
+	mGreen = (BYTE)randDist(rand);
+	mBlue = (BYTE)randDist(rand);
 }
 
 void Visualization::AStarWorking()

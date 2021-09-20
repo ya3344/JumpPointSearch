@@ -11,6 +11,7 @@ enum eTileIndex
 	FINISH_INDEX,
 	OPEN_INDEX,
 	CLOSE_INDEX,
+	SEARCH_INDEX,
 	RECT_SIZE = 60,
 };
 
@@ -27,4 +28,7 @@ struct RectInfo
 	WORD G = 0;
 	WORD H = 0;
 	WORD F = 0;
+	BYTE redColor = 0;
+	BYTE greenColor = 0;
+	BYTE blueColor = 0;
 };
