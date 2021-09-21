@@ -426,7 +426,7 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 		// 가중치 기준으로 소팅한다.
 		mOpenList.sort(Compare);
 
-		const auto iterOpenList = mOpenList.begin();
+		const auto& iterOpenList = mOpenList.begin();
 		mCloseList.emplace_back(*iterOpenList);
 
 		// Render
@@ -477,7 +477,7 @@ JumpPointSearch::AStarNodeInfo* JumpPointSearch::CreateNode(AStarNodeInfo* paren
 	// Manhattan 방식 사용하여 G(부모 사각형에서 노드 비용 계산)
 	dx = (WORD)(abs(tileList[parent->index]->point.x - tileList[index]->point.x)) / RECT_SIZE;
 	dy = (WORD)(abs(tileList[parent->index]->point.y - tileList[index]->point.y)) / RECT_SIZE;
-	G = (dx + dy);
+	G = (dx + dy) + tileList[parent->index]->G;
 
 	// Manhattan 방식 사용하여 H(현재 사각형에서 목적지 비용 계산)
 	dx = (WORD)(abs(tileList[mFinishIndex]->point.x - tileList[index]->point.x)) / RECT_SIZE;
@@ -1033,7 +1033,7 @@ bool JumpPointSearch::SearchLeftDown_CornerNode(AStarNodeInfo* parent, WORD inde
 	AStarNodeInfo* node = nullptr;
 	short findIndex = 0;
 	bool isCorner = false;
-
+	
 	while (true)
 	{
 		// 왼쪽 아래로 더이상 갈 수 없음
@@ -1130,18 +1130,19 @@ bool JumpPointSearch::SearchRightDown_CornerNode(AStarNodeInfo* parent, WORD ind
 	AStarNodeInfo* node = nullptr;
 	short findIndex = 0;
 	bool isCorner = false;
+	WORD originaIndex = index;
 
 	while (true)
 	{
 		// 오른쪽 아래로 더이상 갈 수 없음
 		if ((index % mTile_MaxNumX) == mTile_MaxNumX -1 || (index / mTile_MaxNumX) >= mTile_MaxNumY - 1)
-			return false;
+			break;
 
 		// 왼쪽 아래 대각선 이동
 		index = (index + mTile_MaxNumX) + 1;
 
 		if (tileList[index]->nodeIndex == BLOCK_INDEX)
-			return false;
+			break;
 
 		// 탐색한 위치는 노드인덱스로 표기
 		SearchIndexRender(index, tileList);
@@ -1218,6 +1219,47 @@ bool JumpPointSearch::SearchRightDown_CornerNode(AStarNodeInfo* parent, WORD ind
 			return true;
 		}
 	}
+
+	//while (true)
+	//{
+	//	// 오른쪽 아래로 더이상 갈 수 없음
+	//	if ((originaIndex % mTile_MaxNumX) == mTile_MaxNumX - 1 || (originaIndex / mTile_MaxNumX) >= mTile_MaxNumY - 1)
+	//		return false;
+
+	//	// 왼쪽 아래 대각선 이동
+	//	originaIndex = (originaIndex + mTile_MaxNumX) + 1;
+
+	//	if (tileList[originaIndex]->nodeIndex == BLOCK_INDEX)
+	//		return false;
+
+	//	// 목적지 검색
+	//	if (mFinishIndex == originaIndex)
+	//	{
+	//		node = CreateNode(parent, originaIndex, tileList);
+	//		if (node != nullptr)
+	//			mOpenList.emplace_back(node);
+
+	//		return true;
+	//	}
+
+	//	// 대각선 코너를 못찾으면 보조 옵션 검색
+	//	if (true == SearchRight_CornerNode(parent, originaIndex, tileList, false)) // 오른쪽 방향에 코너가 있는지 체크
+	//	{
+	//		node = CreateNode(parent, originaIndex, tileList);
+	//		if (node != nullptr)
+	//			mOpenList.emplace_back(node);
+
+	//		return true;
+	//	}
+	//	if (true == SearchDown_CornerNode(parent, originaIndex, tileList, false)) // 아래쪽 방향에 코너가 있는지 체크
+	//	{
+	//		node = CreateNode(parent, originaIndex, tileList);
+	//		if (node != nullptr)
+	//			mOpenList.emplace_back(node);
+
+	//		return true;
+	//	}
+	//}
 
 	return false;
 }
