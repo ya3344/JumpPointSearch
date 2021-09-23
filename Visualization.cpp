@@ -169,17 +169,38 @@ void Visualization::DrawTile(HDC hdc)
 	}
 }
 
-void Visualization::DrawFinishLine(const POINT& point)
+void Visualization::DrawFinishLine(const POINT& point, const COLORREF& colorRef)
 {
 	HPEN pen;
 	HPEN oldPen;
 
-	pen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
+	pen = CreatePen(PS_SOLID, 3, colorRef);
 	oldPen = (HPEN)SelectObject(mhMemDC, pen);
 	if (true == mIsMoveTo)
 	{
 		MoveToEx(mhMemDC, point.x - (RECT_SIZE / 2), point.y - (RECT_SIZE / 2), nullptr);
 		mIsMoveTo = false;
+	}
+	else
+	{
+		LineTo(mhMemDC, point.x - (RECT_SIZE / 2), point.y - (RECT_SIZE / 2));
+	}
+
+	SelectObject(mhMemDC, oldPen);
+	DeleteObject(pen);
+}
+
+void Visualization::DrawBresenhamLine(const POINT& point, const COLORREF& colorRef)
+{
+	HPEN pen;
+	HPEN oldPen;
+
+	pen = CreatePen(PS_SOLID, 3, colorRef);
+	oldPen = (HPEN)SelectObject(mhMemDC, pen);
+	if (true == mIsBresenham_MoveTo)
+	{
+		MoveToEx(mhMemDC, point.x - (RECT_SIZE / 2), point.y - (RECT_SIZE / 2), nullptr);
+		mIsBresenham_MoveTo = false;
 	}
 	else
 	{
@@ -278,6 +299,7 @@ void Visualization::AStarWorking()
 	if (true == mIsAStarStart)
 	{
 		mIsMoveTo = true; // 출발지와 목적지 간의 경로를 선으로 표시 하기 위한 작업 진행
+		mIsBresenham_MoveTo = true;
 		if (false == mJumpPointSearch->AStarStart(mPrevStart_TileIndex, mPrevFinish_TileIndex, mTileList))
 		{
 			MESSAGE_BOX(L"해당 위치로는 목적지를 설정 할 수 없습니다.!");

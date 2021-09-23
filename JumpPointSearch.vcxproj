@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Bresenham.h" />
     <ClInclude Include="JumpPointSearch.h" />
     <ClInclude Include="constant.h" />
     <ClInclude Include="framework.h" />
@@ -157,6 +158,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bresenham.cpp" />
     <ClCompile Include="JumpPointSearch.cpp" />
     <ClCompile Include="constant.cpp" />
     <ClCompile Include="Visualization.cpp" />

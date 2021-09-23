@@ -9,7 +9,10 @@ public:
 	bool Initialize();
 	void Release();
 	void DrawTile(HDC hdc);
-	void DrawFinishLine(const POINT& point);
+	void DrawFinishLine(const POINT& point, const COLORREF& colorRef);
+	void DrawBresenhamLine(const POINT& point, const COLORREF& colorRef);
+	void SetMoveTo(const bool isMoveTo) { mIsMoveTo = isMoveTo; }
+	bool GetMoveTo() const { return mIsMoveTo; }
 	void SetTilePicking(const RectInfo& rectInfo);
 	void SetBlockIndexClear();
 
@@ -33,6 +36,7 @@ private:
 	class JumpPointSearch* mJumpPointSearch = nullptr;
 	bool mIsAStarStart = false;
 	bool mIsMoveTo = false;
+	bool mIsBresenham_MoveTo = false;
 
 //API Render 
 private:

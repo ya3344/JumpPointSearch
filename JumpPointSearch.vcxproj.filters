@@ -16,6 +16,9 @@
     <Filter Include="JumpPointSearch">
       <UniqueIdentifier>{e16cbdb4-61e8-4ba0-8351-c97057f817e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Bresenham">
+      <UniqueIdentifier>{6d038f40-18c2-4ee9-9e4f-fac13515239a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -42,6 +45,9 @@
     <ClInclude Include="JumpPointSearch.h">
       <Filter>JumpPointSearch</Filter>
     </ClInclude>
+    <ClInclude Include="Bresenham.h">
+      <Filter>Bresenham</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -58,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="Visualization.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Bresenham.cpp">
+      <Filter>Bresenham</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,16 +1,20 @@
 #include "pch.h"
 #include "JumpPointSearch.h"
 #include "Visualization.h"
+#include "Bresenham.h"
 
 JumpPointSearch::JumpPointSearch(Visualization* visualization)
 {
 	mVisualization = visualization;
+	mBresenham = new Bresenham;
 	_ASSERT(mVisualization != nullptr);
+	_ASSERT(mBresenham != nullptr);
 }
 
 JumpPointSearch::~JumpPointSearch()
 {
 	Release();
+	SafeDelete(mBresenham);
 }
 
 bool JumpPointSearch::Initialize(const WORD tile_MaxNumX, const WORD tile_MaxNumY)
@@ -39,7 +43,7 @@ bool JumpPointSearch::AStarStart(const WORD startIndex, const WORD finishIndex, 
 	mFinishIndex = finishIndex;
 
 	Release();
-	
+
 	return FindRoute(tileList);
 }
 
@@ -52,6 +56,7 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 	WORD parentIndex = 0;
 	WORD finishCount = 0;
 	POINT directionPoint;
+	queue<POINT> bresenhamPoint;
 	AStarNodeInfo* parent = new AStarNodeInfo(0, 0, mStartIndex, nullptr);
 	mCloseList.emplace_back(parent);
 	
@@ -437,16 +442,15 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 
 		parent = *iterOpenList;
 		mOpenList.erase(iterOpenList);
-
+		
 		if (parent->index == mFinishIndex)
 		{
 			wprintf(L"closeListNum:%zd  openListNum:%zd\n", mCloseList.size(), mOpenList.size());
-
+			CalBestRoadSpaec(parent, tileList);
 			while (true)
 			{
 				//Visualization AStar 길찾기 경로 표시
-				mVisualization->DrawFinishLine(tileList[parent->index]->point);
-				// 경로를 생성해준다.
+				mVisualization->DrawFinishLine(tileList[parent->index]->point, RGB(0, 255, 0));
 				if (parent->parent == nullptr)
 				{
 					wprintf(L"finishCount:%d\n", finishCount);
@@ -454,10 +458,40 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 					mVisualization->RenderBitBlt();
 					break;
 				}
-
 				parent = parent->parent;
-				++finishCount;
 			}
+
+			//while (true)
+			//{
+			//	//Visualization AStar 길찾기 경로 표시
+			//	//mVisualization->DrawFinishLine(tileList[parent->index]->point, RGB(0, 255, 0));
+
+			//	if (parent->parent != nullptr)
+			//	{
+			//		mBresenham->Cal_StraightLine(&bresenhamPoint, tileList[parent->parent->index]->point,  tileList[parent->index]->point);
+			//		while(false == bresenhamPoint.empty())
+			//		{
+			//			//WORD index = ((bresenhamPoint.front().y / RECT_SIZE) * mTile_MaxNumX) + (bresenhamPoint.front().x / RECT_SIZE);
+			//			//mVisualization->DrawBresenhamLine(bresenhamPoint.front(), RGB(255, 0, 0));
+			//			bresenhamPoint.pop();
+			//			//mVisualization->RenderBitBlt();
+			//		}
+			//		
+			//	}
+
+			//
+			//	// 경로를 생성해준다.
+			//	if (parent->parent == nullptr)
+			//	{
+			//		wprintf(L"finishCount:%d\n", finishCount);
+			//		//Visualization AStar 길찾기 경로 표시
+			//		mVisualization->RenderBitBlt();
+			//		break;
+			//	}
+
+			//	parent = parent->parent;
+			//	++finishCount;
+			//}
 			break;
 		}
 
@@ -1288,6 +1322,99 @@ void JumpPointSearch::RandomColorSetting()
 	mBlue = (BYTE)randDist(rand);
 }
 
+bool JumpPointSearch::CalBestRoadSpaec(AStarNodeInfo* node, const vector<RectInfo*>& tileList)
+{
+	int beforeIndex = -1;
+	int index = 0;
+	WORD finishCount = 0;
+	vector<POINT> bresenhamPoint;
+	AStarNodeInfo* finishNode = node;
+	AStarNodeInfo* childNode = finishNode->parent;
+	AStarNodeInfo* tempNode = nullptr;
+	bool isBlock = false;
+	
+	_ASSERT(finishNode != nullptr);
+	mBestRoadSpace.emplace(finishNode);
+
+	while (childNode != nullptr && finishNode != nullptr)
+	{
+		isBlock = false;
+		beforeIndex = -1;
+		bresenhamPoint.clear();
+		mBresenham->Cal_StraightLine(&bresenhamPoint, tileList[childNode->index]->point,  tileList[finishNode->index]->point);
+
+		for (int i = 0; i < bresenhamPoint.size(); ++i)
+		{
+			index = (((bresenhamPoint[i].y / RECT_SIZE) - 1) * mTile_MaxNumX) + ((bresenhamPoint[i].x / RECT_SIZE) - 1);
+			//index -= 1;
+			if (beforeIndex != index)
+			{
+				beforeIndex = index;
+				// 장애물 노드가 있으면 바로 무한루프를 정지하고 finishNode 갱신 및 노드 포인트 생성
+				if (tileList[index]->nodeIndex == BLOCK_INDEX)
+				{
+					isBlock = true;
+					if (tempNode != nullptr) // 정상적인 길이 이전에 있었으면 그 노드를 finishNode 로 갱신
+					{
+						finishNode = tempNode;
+						mBestRoadSpace.emplace(finishNode);
+						tempNode = nullptr;
+					}
+					else
+					{
+						finishNode = finishNode->parent;
+					}
+					
+					if (finishNode == childNode)
+						childNode = finishNode->parent;
+					break;
+				}
+			}
+		}
+
+		// 점과 점사이에 BlockNode가 없으면 다음 노드와 연결하여 이용 가능한지 확인, BlockNode가 있으면 바로 그 지점에 노드 포인트 생성.
+		if (false == isBlock)
+		{
+			if (childNode->parent != nullptr)
+			{
+				tempNode = childNode;
+				childNode = childNode->parent;
+			}
+			else
+			{
+				mBestRoadSpace.emplace(childNode);
+				childNode = childNode->parent;
+			}
+		}
+		
+		// 경로를 생성해준다.
+		//if (finishParent->parent == nullptr)
+		//{
+		//	wprintf(L"finishCount:%d\n", finishCount);
+		//	//Visualization AStar 길찾기 경로 표시
+		//	//mVisualization->RenderBitBlt();
+		//	break;
+		//}
+
+		//parent = parent->parent;
+		//++finishCount;
+	}
+
+	BestRoadRender(tileList);
+
+	return true;
+}
+
+void JumpPointSearch::BestRoadRender(const vector<RectInfo*>& tileList)
+{
+	while (mBestRoadSpace.empty() == false)
+	{
+		mVisualization->DrawBresenhamLine(tileList[mBestRoadSpace.top()->index]->point, RGB(0, 0, 255));
+		mBestRoadSpace.pop();
+	}
+	mVisualization->RenderBitBlt();
+}
+
 
 void JumpPointSearch::Release(void)
 {
@@ -1296,4 +1423,9 @@ void JumpPointSearch::Release(void)
 
 	for_each(mCloseList.begin(), mCloseList.end(), SafeDelete<AStarNodeInfo*>);
 	mCloseList.clear();
+
+	while (mBestRoadSpace.empty() == false)
+	{
+		mBestRoadSpace.pop();
+	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 class Visualization;
+class Bresenham;
 
 class JumpPointSearch
 {
@@ -71,10 +72,13 @@ private:
 private:
 	void SearchIndexRender(const WORD index, vector<RectInfo*>& tileList);
 	void RandomColorSetting();
+	bool CalBestRoadSpaec(AStarNodeInfo* node, const vector<RectInfo*>& tileList);
+	void BestRoadRender(const vector<RectInfo*>& tileList);
 
 private:
 	list<AStarNodeInfo*> mOpenList;
 	list<AStarNodeInfo*> mCloseList;
+	stack<AStarNodeInfo*> mBestRoadSpace;
 
 private:
 	WORD mStartIndex = 0;
@@ -85,8 +89,11 @@ private:
 private:
 	Visualization* mVisualization = nullptr;
 
-	// RandomColorSetting
 private:
+	Bresenham* mBresenham = nullptr;
+	
+	
+private: // RandomColorSetting
 	BYTE mRed = 0;
 	BYTE mGreen = 0;
 	BYTE mBlue = 0;
