@@ -25,8 +25,6 @@ private:
 	inline RECT RectPointPlus(const RECT rect, const POINT& point);
 
 private:
-	WORD mTile_MaxNumX = 0;
-	WORD mTile_MaxNumY = 0;
 	WORD mPrevStart_TileIndex = 0;
 	WORD mPrevFinish_TileIndex = 0;
 	RECT mRect;

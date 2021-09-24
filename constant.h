@@ -31,3 +31,6 @@ struct RectInfo
 	BYTE greenColor = 0;
 	BYTE blueColor = 0;
 };
+
+extern WORD gTile_MaxNumX;
+extern WORD gTile_MaxNumY;

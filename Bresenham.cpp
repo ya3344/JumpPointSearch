@@ -1,49 +1,77 @@
 #include "pch.h"
 #include "Bresenham.h"
 
-void Bresenham::Cal_StraightLine(vector<POINT>* outStackPoint, const POINT& startPoint, const POINT& endPoint)
+void Bresenham::Cal_StraightLine(list<WORD>* outStraightIndex,
+	const WORD startIndex, const WORD endIndex)
 {
-	WORD deltaX = (WORD)abs(endPoint.x - startPoint.x);
-	WORD deltaY = (WORD)abs(endPoint.y - startPoint.y);
+	WORD deltaX = 0;
+	WORD deltaY = 0;
 	bool isXPositive = false;
 	bool isYPositive = false;
 	WORD increaseAxis = 0;
-	POINT point = startPoint;
+	IndexInfo start_IndexInfo;
+	IndexInfo end_IndexInfo;
+	WORD index = 0;
 
-	if (endPoint.x - startPoint.x < 0)
+	start_IndexInfo.yIndex = startIndex / gTile_MaxNumX;
+	start_IndexInfo.xIndex = startIndex - (start_IndexInfo.yIndex * gTile_MaxNumX);
+	end_IndexInfo.yIndex = endIndex / gTile_MaxNumX;
+	end_IndexInfo.xIndex = endIndex - (end_IndexInfo.yIndex * gTile_MaxNumX);
+
+	deltaX = abs(end_IndexInfo.xIndex - start_IndexInfo.xIndex);
+	deltaY = abs(end_IndexInfo.yIndex - start_IndexInfo.yIndex);
+
+	if (end_IndexInfo.xIndex - start_IndexInfo.xIndex < 0)
 	{
-		isXPositive = false;
+		if(start_IndexInfo.xIndex < end_IndexInfo.xIndex)
+			isXPositive = true;
+		else
+		{
+			isXPositive = false;
+		}
+	}
+	{
+		if (start_IndexInfo.xIndex > end_IndexInfo.xIndex)
+			isXPositive = false;
+		else
+		{
+			isXPositive = true;
+		}
+	}
+
+	if (end_IndexInfo.yIndex - start_IndexInfo.yIndex < 0)
+	{
+		if (start_IndexInfo.yIndex < end_IndexInfo.yIndex)
+			isYPositive = false;
+		else
+			isYPositive = true;
 	}
 	else
 	{
-		isXPositive = true;
-	}
-
-	if (endPoint.y - startPoint.y < 0)
-	{
-		isYPositive = false;
-	}
-	else
-	{
-		isYPositive = true;
+		if (start_IndexInfo.yIndex > end_IndexInfo.yIndex)
+			isYPositive = false;
+		else
+			isYPositive = true;
 	}
 
 	if (deltaX > deltaY)
 	{
+		//increaseAxis += (deltaX / 2);
 		for (int i = 0; i < deltaX; ++i)
 		{
 			if (true == isXPositive)
 			{
-				++point.x;
+				++start_IndexInfo.xIndex;
 			}	
 			else
 			{
-				--point.x;
+				--start_IndexInfo.xIndex;
 			}
 
 			if (0 == deltaY)
 			{
-				outStackPoint->emplace_back(point);
+				index = start_IndexInfo.xIndex + (start_IndexInfo.yIndex * gTile_MaxNumX);
+				outStraightIndex->emplace_back(index);
 				continue;
 			}
 
@@ -53,33 +81,36 @@ void Bresenham::Cal_StraightLine(vector<POINT>* outStackPoint, const POINT& star
 			{
 				if (true == isYPositive)
 				{
-					++point.y;
+					++start_IndexInfo.yIndex;
 				}
 				else
 				{
-					--point.y;
+					--start_IndexInfo.yIndex;
 				}
 				increaseAxis -= deltaX;
-				outStackPoint->emplace_back(point);
+				index = start_IndexInfo.xIndex + (start_IndexInfo.yIndex * gTile_MaxNumX);
+				outStraightIndex->emplace_back(index);
 			}
 		}
 	}
 	else
 	{
+		//increaseAxis += (deltaY / 2);
 		for (int i = 0; i < deltaY; ++i)
 		{
 			if (true == isYPositive)
 			{
-				++point.y;
+				++start_IndexInfo.yIndex;
 			}
 			else
 			{
-				--point.y;
+				--start_IndexInfo.yIndex;
 			}
 
 			if (0 == deltaX)
 			{
-				outStackPoint->emplace_back(point);
+				index = start_IndexInfo.xIndex + (start_IndexInfo.yIndex * gTile_MaxNumX);
+				outStraightIndex->emplace_back(index);
 				continue;
 			}
 			increaseAxis += deltaX;
@@ -87,14 +118,15 @@ void Bresenham::Cal_StraightLine(vector<POINT>* outStackPoint, const POINT& star
 			{
 				if (true == isXPositive)
 				{
-					++point.x;
+					++start_IndexInfo.xIndex;
 				}
 				else
 				{
-					--point.x;
+					--start_IndexInfo.xIndex;
 				}
 				increaseAxis -= deltaY;
-				outStackPoint->emplace_back(point);
+				index = start_IndexInfo.xIndex + (start_IndexInfo.yIndex * gTile_MaxNumX);
+				outStraightIndex->emplace_back(index);
 			}
 		}
 	}

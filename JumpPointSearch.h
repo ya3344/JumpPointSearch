@@ -46,7 +46,7 @@ private:
 	};
 
 public:
-	bool Initialize(const WORD tile_MaxNumX, const WORD tile_MaxNumY);
+	//bool Initialize(const WORD tile_MaxNumX, const WORD tile_MaxNumY);
 	void Release(void);
 
 public:
@@ -83,8 +83,6 @@ private:
 private:
 	WORD mStartIndex = 0;
 	WORD mFinishIndex = 0;
-	WORD mTile_MaxNumX = 0;
-	WORD mTile_MaxNumY = 0;
 
 private:
 	Visualization* mVisualization = nullptr;

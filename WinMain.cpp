@@ -224,7 +224,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 rectInfo.point.x = LOWORD(lParam);
                 rectInfo.point.y = HIWORD(lParam);
                 //ScreenToClient(gHWnd, &rectInfo.point);
-                wprintf(L"X: %d Y: %d\n", rectInfo.point.x, rectInfo.point.y);
+                wprintf(L"\nX: %d Y: %d\n", rectInfo.point.x, rectInfo.point.y);
                 if (rButtonCount == 0)
                     rectInfo.nodeIndex = START_INDEX;
                 else if (rButtonCount == 1)

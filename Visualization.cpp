@@ -24,14 +24,13 @@ bool Visualization::Initialize()
 	_ASSERT(mJumpPointSearch != nullptr);
 
 	mRect = { -RECT_SIZE, -RECT_SIZE, RECT_SIZE, RECT_SIZE };
-	mTile_MaxNumX = WINDOW_WIDTH / RECT_SIZE;
-	mTile_MaxNumY = WINDOW_HEIGHT / RECT_SIZE;
-	mJumpPointSearch->Initialize(mTile_MaxNumX, mTile_MaxNumY);
+	gTile_MaxNumX = WINDOW_WIDTH / RECT_SIZE;
+	gTile_MaxNumY = WINDOW_HEIGHT / RECT_SIZE;
 
 	// 타일 세팅
-	for (WORD i = 1; i <= mTile_MaxNumY; ++i)
+	for (WORD i = 1; i <= gTile_MaxNumY; ++i)
 	{
-		for (WORD j = 1; j <= mTile_MaxNumX; ++j)
+		for (WORD j = 1; j <= gTile_MaxNumX; ++j)
 		{
 			rectInfo = new RectInfo;
 			_ASSERT(rectInfo != nullptr);
@@ -65,7 +64,6 @@ void Visualization::DrawTile(HDC hdc)
 	HBRUSH brush;
 	HBRUSH oldBrush;
 	TCHAR inputText[20] = { 0, };
-	static bool isMoveTo = true;
 
 	for (const RectInfo* rectInfo : mTileList)
 	{
@@ -225,7 +223,7 @@ void Visualization::SetTilePicking(const RectInfo& rectInfo)
 	y = (WORD)rectInfo.point.y / RECT_SIZE;
 	wprintf(L"xindex:%d yindex:%d\n", x, y);
 
-	tileIndex = (y * mTile_MaxNumX) + x;
+	tileIndex = (y * gTile_MaxNumX) + x;
 	wprintf(L"tildIndex:%d\n", tileIndex);
 	if (tileIndex >= mTileList.size())
 	{

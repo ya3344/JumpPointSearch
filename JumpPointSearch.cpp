@@ -17,13 +17,13 @@ JumpPointSearch::~JumpPointSearch()
 	SafeDelete(mBresenham);
 }
 
-bool JumpPointSearch::Initialize(const WORD tile_MaxNumX, const WORD tile_MaxNumY)
-{
-	mTile_MaxNumX = tile_MaxNumX;
-	mTile_MaxNumY = tile_MaxNumY;
-	wprintf(L"mTile_MaxNumX:%d mTile_MaxNumY:%d", tile_MaxNumX, tile_MaxNumY);
-	return true;
-}
+//bool JumpPointSearch::Initialize(const WORD tile_MaxNumX, const WORD tile_MaxNumY)
+//{
+//	gTile_MaxNumX = tile_MaxNumX;
+//	mTile_MaxNumY = tile_MaxNumY;
+//	wprintf(L"gTile_MaxNumX:%d mTile_MaxNumY:%d", tile_MaxNumX, tile_MaxNumY);
+//	return true;
+//}
 
 
 bool JumpPointSearch::AStarStart(const WORD startIndex, const WORD finishIndex, vector<RectInfo*>& tileList)
@@ -106,13 +106,13 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 				SearchUp_CornerNode(parent, index, tileList, true);
 				
 				// 위쪽으로 갈 수 있는지 체크
-				if (index >= mTile_MaxNumX)
+				if (index >= gTile_MaxNumX)
 				{
 					// 위쪽으로 코너 찾기
-					findIndex = index - mTile_MaxNumX;
+					findIndex = index - gTile_MaxNumX;
 
 					// 오른쪽 코너 체크
-					if (index % mTile_MaxNumX != mTile_MaxNumX - 1 && findIndex % mTile_MaxNumX != mTile_MaxNumX - 1)
+					if (index % gTile_MaxNumX != gTile_MaxNumX - 1 && findIndex % gTile_MaxNumX != gTile_MaxNumX - 1)
 					{
 						// 코너로 판단
 						if (BLOCK_INDEX == tileList[index + 1]->nodeIndex && NORMAL_INDEX >= tileList[findIndex + 1]->nodeIndex)
@@ -121,7 +121,7 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 						}
 					}
 					// 왼쪽 코너 체크
-					if (index % mTile_MaxNumX > 0 && findIndex % mTile_MaxNumX > 0)
+					if (index % gTile_MaxNumX > 0 && findIndex % gTile_MaxNumX > 0)
 					{
 						// 코너로 판단
 						if (BLOCK_INDEX == tileList[index - 1]->nodeIndex && NORMAL_INDEX >= tileList[findIndex - 1]->nodeIndex)
@@ -138,29 +138,29 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 				SearchLeft_CornerNode(parent, index, tileList, true);
 			
 				// 왼쪽으로 더이상 갈 수 없는지 체크
-				if (index % mTile_MaxNumX > 0)
+				if (index % gTile_MaxNumX > 0)
 				{
 					// 왼쪽으로 코너 찾기
 					findIndex = index - 1;
 
 					// 위쪽 코너 체크
-					if (index >= mTile_MaxNumX && 
-						findIndex >= mTile_MaxNumX)
+					if (index >= gTile_MaxNumX && 
+						findIndex >= gTile_MaxNumX)
 					{
 						// 코너로 판단
-						if (BLOCK_INDEX == tileList[index - mTile_MaxNumX]->nodeIndex // 위쪽 체크
-							&& NORMAL_INDEX >= tileList[findIndex - mTile_MaxNumX]->nodeIndex) // 위쪽 체크
+						if (BLOCK_INDEX == tileList[index - gTile_MaxNumX]->nodeIndex // 위쪽 체크
+							&& NORMAL_INDEX >= tileList[findIndex - gTile_MaxNumX]->nodeIndex) // 위쪽 체크
 						{
 							SearchLeftUp_CornerNode(parent, index, tileList);
 						}
 					}
 					// 아래쪽 코너 체크
-					if (index / mTile_MaxNumX < mTile_MaxNumY - 1 && 
-						findIndex / mTile_MaxNumX < mTile_MaxNumY - 1)
+					if (index / gTile_MaxNumX < gTile_MaxNumY - 1 && 
+						findIndex / gTile_MaxNumX < gTile_MaxNumY - 1)
 					{
 						// 코너로 판단
-						if (BLOCK_INDEX == tileList[index + mTile_MaxNumX]->nodeIndex // 아래쪽 체크
-							&& NORMAL_INDEX >= tileList[findIndex + mTile_MaxNumX]->nodeIndex) // 아래쪽 체크
+						if (BLOCK_INDEX == tileList[index + gTile_MaxNumX]->nodeIndex // 아래쪽 체크
+							&& NORMAL_INDEX >= tileList[findIndex + gTile_MaxNumX]->nodeIndex) // 아래쪽 체크
 						{
 							SearchLeftDown_CornerNode(parent, index, tileList);
 						}
@@ -178,13 +178,13 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 				SearchUp_CornerNode(parent, index, tileList, true);
 				//RandomColorSetting();
 				// 코너 찾기 한칸 위로 체크
-				if (index >= mTile_MaxNumX)
+				if (index >= gTile_MaxNumX)
 				{
-					findIndex = index - mTile_MaxNumX;
+					findIndex = index - gTile_MaxNumX;
 
 					// 위쪽 코너 체크
-					if (index % mTile_MaxNumX != mTile_MaxNumX - 1 &&  //오른쪽 체크
-						findIndex % mTile_MaxNumX != mTile_MaxNumX - 1) // 오른쪽 체크
+					if (index % gTile_MaxNumX != gTile_MaxNumX - 1 &&  //오른쪽 체크
+						findIndex % gTile_MaxNumX != gTile_MaxNumX - 1) // 오른쪽 체크
 					{
 						// 코너로 판단
 						if (BLOCK_INDEX == tileList[index + 1]->nodeIndex
@@ -196,17 +196,17 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 				}
 
 				// 코너 찾기 한칸 왼쪽 체크
-				if ((index % mTile_MaxNumX) > 0)
+				if ((index % gTile_MaxNumX) > 0)
 				{
 					findIndex = index - 1;
 
 					// 아래쪽 코너 체크
-					if (index / mTile_MaxNumX < mTile_MaxNumY - 1 && // 아래쪽 체크
-						findIndex / mTile_MaxNumX < mTile_MaxNumY - 1) // 아래쪽 체크
+					if (index / gTile_MaxNumX < gTile_MaxNumY - 1 && // 아래쪽 체크
+						findIndex / gTile_MaxNumX < gTile_MaxNumY - 1) // 아래쪽 체크
 					{
 						// 코너로 판단
-						if (BLOCK_INDEX == tileList[index + mTile_MaxNumX]->nodeIndex
-							&& NORMAL_INDEX >= tileList[findIndex + mTile_MaxNumX]->nodeIndex)
+						if (BLOCK_INDEX == tileList[index + gTile_MaxNumX]->nodeIndex
+							&& NORMAL_INDEX >= tileList[findIndex + gTile_MaxNumX]->nodeIndex)
 						{
 							SearchLeftDown_CornerNode(parent, index, tileList);
 						}
@@ -220,26 +220,26 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 				SearchRight_CornerNode(parent, index, tileList, true);
 
 				// 오른쪽으로 더이상 갈 수 있는지 체크
-				if (index % mTile_MaxNumX != mTile_MaxNumX - 1)
+				if (index % gTile_MaxNumX != gTile_MaxNumX - 1)
 				{
 					findIndex = index + 1;
 					// 위쪽 코너 체크
-					if (index >= mTile_MaxNumX && findIndex >= mTile_MaxNumX)
+					if (index >= gTile_MaxNumX && findIndex >= gTile_MaxNumX)
 					{
 						// 코너로 판단
-						if (BLOCK_INDEX == tileList[index - mTile_MaxNumX]->nodeIndex // 위쪽 체크
-							&& NORMAL_INDEX >= tileList[findIndex - mTile_MaxNumX]->nodeIndex) // 위쪽 체크
+						if (BLOCK_INDEX == tileList[index - gTile_MaxNumX]->nodeIndex // 위쪽 체크
+							&& NORMAL_INDEX >= tileList[findIndex - gTile_MaxNumX]->nodeIndex) // 위쪽 체크
 						{
 							SearchRightUp_CornerNode(parent, index, tileList);
 						}
 					}
 					// 아래쪽 코너 체크
-					if (index / mTile_MaxNumX < mTile_MaxNumY - 1
-						&& findIndex / mTile_MaxNumX < mTile_MaxNumY - 1)
+					if (index / gTile_MaxNumX < gTile_MaxNumY - 1
+						&& findIndex / gTile_MaxNumX < gTile_MaxNumY - 1)
 					{
 						// 코너로 판단
-						if (BLOCK_INDEX == tileList[index + mTile_MaxNumX]->nodeIndex // 아래쪽 체크
-							&& NORMAL_INDEX >= tileList[findIndex + mTile_MaxNumX]->nodeIndex) // 아래쪽 체크
+						if (BLOCK_INDEX == tileList[index + gTile_MaxNumX]->nodeIndex // 아래쪽 체크
+							&& NORMAL_INDEX >= tileList[findIndex + gTile_MaxNumX]->nodeIndex) // 아래쪽 체크
 						{
 							SearchRightDown_CornerNode(parent, index, tileList);
 						}
@@ -258,13 +258,13 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 				//RandomColorSetting();
 
 				// 코너 찾기 한칸 위로 체크
-				if (index >= mTile_MaxNumX)
+				if (index >= gTile_MaxNumX)
 				{
-					findIndex = index - mTile_MaxNumX;
+					findIndex = index - gTile_MaxNumX;
 
 					// 왼쪽 코너 체크
-					if (index % mTile_MaxNumX > 0 &&  //왼쪽 체크
-						findIndex % mTile_MaxNumX > 0) // 왼쪽 체크
+					if (index % gTile_MaxNumX > 0 &&  //왼쪽 체크
+						findIndex % gTile_MaxNumX > 0) // 왼쪽 체크
 					{
 						// 코너로 판단
 						if (BLOCK_INDEX == tileList[index - 1]->nodeIndex
@@ -276,16 +276,16 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 				}
 
 				// 코너 찾기 한칸 오른쪽 체크
-				if (index % mTile_MaxNumX != mTile_MaxNumX - 1)
+				if (index % gTile_MaxNumX != gTile_MaxNumX - 1)
 				{
 					findIndex = index + 1;
 					// 아래쪽 코너 체크
-					if (index / mTile_MaxNumX < mTile_MaxNumY - 1 && // 아래쪽 체크
-						findIndex / mTile_MaxNumX < mTile_MaxNumY - 1) // 아래쪽 체크
+					if (index / gTile_MaxNumX < gTile_MaxNumY - 1 && // 아래쪽 체크
+						findIndex / gTile_MaxNumX < gTile_MaxNumY - 1) // 아래쪽 체크
 					{
 						// 코너로 판단
-						if (BLOCK_INDEX == tileList[index + mTile_MaxNumX]->nodeIndex
-							&& NORMAL_INDEX >= tileList[findIndex + mTile_MaxNumX]->nodeIndex)
+						if (BLOCK_INDEX == tileList[index + gTile_MaxNumX]->nodeIndex
+							&& NORMAL_INDEX >= tileList[findIndex + gTile_MaxNumX]->nodeIndex)
 						{
 							SearchRightDown_CornerNode(parent, index, tileList);
 						}
@@ -299,13 +299,13 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 				SearchDown_CornerNode(parent, index, tileList, true);
 
 				// 아래쪽으로 코너 찾기
-				if ((index / mTile_MaxNumX) < mTile_MaxNumY - 1) // 아래쪽으로 더이상 갈 수 있는지 체크
+				if ((index / gTile_MaxNumX) < gTile_MaxNumY - 1) // 아래쪽으로 더이상 갈 수 있는지 체크
 				{
-					findIndex = index + mTile_MaxNumX;
+					findIndex = index + gTile_MaxNumX;
 
 					// 왼쪽 코너 체크
-					if (index % mTile_MaxNumX > 0
-						&& findIndex % mTile_MaxNumX > 0)
+					if (index % gTile_MaxNumX > 0
+						&& findIndex % gTile_MaxNumX > 0)
 					{
 						// 코너로 판단
 						if (BLOCK_INDEX == tileList[index - 1]->nodeIndex // 왼쪽 체크
@@ -315,8 +315,8 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 						}
 					}
 					// 오른쪽 코너 체크
-					if (index % mTile_MaxNumX != mTile_MaxNumX - 1
-						&& findIndex % mTile_MaxNumX != mTile_MaxNumX - 1)
+					if (index % gTile_MaxNumX != gTile_MaxNumX - 1
+						&& findIndex % gTile_MaxNumX != gTile_MaxNumX - 1)
 					{
 						// 코너로 판단
 						if (BLOCK_INDEX == tileList[index + 1]->nodeIndex // 오른쪽 체크
@@ -339,17 +339,17 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 				//RandomColorSetting();
 
 				// 코너 찾기 한칸 왼쪽 체크
-				if ((index % mTile_MaxNumX) > 0)
+				if ((index % gTile_MaxNumX) > 0)
 				{
 					findIndex = index - 1;
 
 					// 위쪽 코너 체크
-					if (index >= mTile_MaxNumX && // 위쪽 체크
-						findIndex >= mTile_MaxNumX) // 위쪽 체크
+					if (index >= gTile_MaxNumX && // 위쪽 체크
+						findIndex >= gTile_MaxNumX) // 위쪽 체크
 					{
 						// 코너로 판단
-						if (BLOCK_INDEX == tileList[index - mTile_MaxNumX]->nodeIndex
-							&& NORMAL_INDEX >= tileList[findIndex - mTile_MaxNumX]->nodeIndex)
+						if (BLOCK_INDEX == tileList[index - gTile_MaxNumX]->nodeIndex
+							&& NORMAL_INDEX >= tileList[findIndex - gTile_MaxNumX]->nodeIndex)
 						{
 							SearchLeftUp_CornerNode(parent, index, tileList);
 						}
@@ -357,13 +357,13 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 				}
 
 				// 코너 찾기 아래로 체크
-				if (index / mTile_MaxNumX < mTile_MaxNumY - 1)
+				if (index / gTile_MaxNumX < gTile_MaxNumY - 1)
 				{
-					findIndex = index + mTile_MaxNumX;
+					findIndex = index + gTile_MaxNumX;
 
 					// 위쪽 코너 체크
-					if (index % mTile_MaxNumX != mTile_MaxNumX - 1 &&  //오른쪽 체크
-						findIndex % mTile_MaxNumX != mTile_MaxNumX - 1) // 오른쪽 체크
+					if (index % gTile_MaxNumX != gTile_MaxNumX - 1 &&  //오른쪽 체크
+						findIndex % gTile_MaxNumX != gTile_MaxNumX - 1) // 오른쪽 체크
 					{
 						// 코너로 판단
 						if (BLOCK_INDEX == tileList[index + 1]->nodeIndex
@@ -386,17 +386,17 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 				//RandomColorSetting();
 
 				// 코너 찾기 한칸 오른쪽 체크
-				if ((index % mTile_MaxNumX) != mTile_MaxNumX - 1)
+				if ((index % gTile_MaxNumX) != gTile_MaxNumX - 1)
 				{
 					findIndex = index + 1;
 
 					// 위쪽 코너 체크
-					if (index >= mTile_MaxNumX && // 위쪽 체크
-						findIndex >= mTile_MaxNumX) // 위쪽 체크
+					if (index >= gTile_MaxNumX && // 위쪽 체크
+						findIndex >= gTile_MaxNumX) // 위쪽 체크
 					{
 						// 코너로 판단
-						if (BLOCK_INDEX == tileList[index - mTile_MaxNumX]->nodeIndex
-							&& NORMAL_INDEX >= tileList[findIndex - mTile_MaxNumX]->nodeIndex)
+						if (BLOCK_INDEX == tileList[index - gTile_MaxNumX]->nodeIndex
+							&& NORMAL_INDEX >= tileList[findIndex - gTile_MaxNumX]->nodeIndex)
 						{
 							SearchRightUp_CornerNode(parent, index, tileList);
 						}
@@ -404,13 +404,13 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 				}
 
 				// 코너 찾기 아래로 체크
-				if (index / mTile_MaxNumX < mTile_MaxNumY - 1)
+				if (index / gTile_MaxNumX < gTile_MaxNumY - 1)
 				{
-					findIndex = index + mTile_MaxNumX;
+					findIndex = index + gTile_MaxNumX;
 
 					// 위쪽 코너 체크
-					if (index % mTile_MaxNumX > 0 &&  //왼쪽 체크
-						findIndex % mTile_MaxNumX > 0) //왼쪽 체크
+					if (index % gTile_MaxNumX > 0 &&  //왼쪽 체크
+						findIndex % gTile_MaxNumX > 0) //왼쪽 체크
 					{
 						// 코너로 판단
 						if (BLOCK_INDEX == tileList[index - 1]->nodeIndex
@@ -459,39 +459,8 @@ bool JumpPointSearch::FindRoute(vector<RectInfo*>& tileList)
 					break;
 				}
 				parent = parent->parent;
+				++finishCount;
 			}
-
-			//while (true)
-			//{
-			//	//Visualization AStar 길찾기 경로 표시
-			//	//mVisualization->DrawFinishLine(tileList[parent->index]->point, RGB(0, 255, 0));
-
-			//	if (parent->parent != nullptr)
-			//	{
-			//		mBresenham->Cal_StraightLine(&bresenhamPoint, tileList[parent->parent->index]->point,  tileList[parent->index]->point);
-			//		while(false == bresenhamPoint.empty())
-			//		{
-			//			//WORD index = ((bresenhamPoint.front().y / RECT_SIZE) * mTile_MaxNumX) + (bresenhamPoint.front().x / RECT_SIZE);
-			//			//mVisualization->DrawBresenhamLine(bresenhamPoint.front(), RGB(255, 0, 0));
-			//			bresenhamPoint.pop();
-			//			//mVisualization->RenderBitBlt();
-			//		}
-			//		
-			//	}
-
-			//
-			//	// 경로를 생성해준다.
-			//	if (parent->parent == nullptr)
-			//	{
-			//		wprintf(L"finishCount:%d\n", finishCount);
-			//		//Visualization AStar 길찾기 경로 표시
-			//		mVisualization->RenderBitBlt();
-			//		break;
-			//	}
-
-			//	parent = parent->parent;
-			//	++finishCount;
-			//}
 			break;
 		}
 
@@ -579,11 +548,11 @@ bool JumpPointSearch::SearchUp_CornerNode(AStarNodeInfo* parent, WORD index, vec
 	while (true)
 	{
 		// 위쪽으로 더이상 갈 수 없음
-		if (index < mTile_MaxNumX)
+		if (index < gTile_MaxNumX)
 			return false;
 
 		// 윗쪽으로 이동
-		index = index - mTile_MaxNumX;
+		index = index - gTile_MaxNumX;
 
 		if (tileList[index]->nodeIndex == BLOCK_INDEX)
 			return false;
@@ -604,14 +573,14 @@ bool JumpPointSearch::SearchUp_CornerNode(AStarNodeInfo* parent, WORD index, vec
 		}
 
 		// 위쪽으로 더이상 갈 수 없는지 체크
-		if (index < mTile_MaxNumX)
+		if (index < gTile_MaxNumX)
 			continue;
 
 		// 위쪽으로 코너 찾기
-		findIndex = index - mTile_MaxNumX;
+		findIndex = index - gTile_MaxNumX;
 
 		// 오른쪽 코너 체크
-		if (index % mTile_MaxNumX != mTile_MaxNumX - 1 && findIndex % mTile_MaxNumX != mTile_MaxNumX - 1)
+		if (index % gTile_MaxNumX != gTile_MaxNumX - 1 && findIndex % gTile_MaxNumX != gTile_MaxNumX - 1)
 		{
 			// 코너로 판단
 			if (BLOCK_INDEX == tileList[index + 1]->nodeIndex && NORMAL_INDEX >= tileList[findIndex + 1]->nodeIndex)
@@ -626,7 +595,7 @@ bool JumpPointSearch::SearchUp_CornerNode(AStarNodeInfo* parent, WORD index, vec
 			}
 		}
 		// 왼쪽 코너 체크
-		if (index % mTile_MaxNumX > 0 && findIndex % mTile_MaxNumX > 0)
+		if (index % gTile_MaxNumX > 0 && findIndex % gTile_MaxNumX > 0)
 		{
 			// 코너로 판단
 			if (BLOCK_INDEX == tileList[index - 1]->nodeIndex && NORMAL_INDEX >= tileList[findIndex - 1]->nodeIndex)
@@ -653,7 +622,7 @@ bool JumpPointSearch::SearchLeft_CornerNode(AStarNodeInfo* parent, WORD index, v
 	while (true)
 	{
 		// 왼쪽으로 더이상 갈 수 없음
-		if (index % mTile_MaxNumX <= 0)
+		if (index % gTile_MaxNumX <= 0)
 			return false;
 
 		// 왼쪽으로 이동
@@ -679,18 +648,18 @@ bool JumpPointSearch::SearchLeft_CornerNode(AStarNodeInfo* parent, WORD index, v
 
 
 		// 왼쪽으로 더이상 갈 수 없음
-		if (index % mTile_MaxNumX <= 0)
+		if (index % gTile_MaxNumX <= 0)
 			continue;
 
 		// 왼쪽으로 코너 찾기
 		findIndex = index - 1;
 
 		// 위쪽 코너 체크
-		if (index >= mTile_MaxNumX && findIndex >= mTile_MaxNumX)
+		if (index >= gTile_MaxNumX && findIndex >= gTile_MaxNumX)
 		{
 			// 코너로 판단
-			if (BLOCK_INDEX == tileList[index - mTile_MaxNumX]->nodeIndex // 위쪽 체크
-				&& NORMAL_INDEX >= tileList[findIndex - mTile_MaxNumX]->nodeIndex) // 위쪽 체크
+			if (BLOCK_INDEX == tileList[index - gTile_MaxNumX]->nodeIndex // 위쪽 체크
+				&& NORMAL_INDEX >= tileList[findIndex - gTile_MaxNumX]->nodeIndex) // 위쪽 체크
 			{
 				if (true == isNodeCreate)
 				{
@@ -702,12 +671,12 @@ bool JumpPointSearch::SearchLeft_CornerNode(AStarNodeInfo* parent, WORD index, v
 			}
 		}
 		// 아래쪽 코너 체크
-		if (index / mTile_MaxNumX < mTile_MaxNumY - 1 
-			&& findIndex / mTile_MaxNumX < mTile_MaxNumY - 1)
+		if (index / gTile_MaxNumX < gTile_MaxNumY - 1 
+			&& findIndex / gTile_MaxNumX < gTile_MaxNumY - 1)
 		{
 			// 코너로 판단
-			if (BLOCK_INDEX == tileList[index + mTile_MaxNumX]->nodeIndex // 아래쪽 체크
-				&& NORMAL_INDEX >= tileList[findIndex + mTile_MaxNumX]->nodeIndex) // 아래쪽 체크
+			if (BLOCK_INDEX == tileList[index + gTile_MaxNumX]->nodeIndex // 아래쪽 체크
+				&& NORMAL_INDEX >= tileList[findIndex + gTile_MaxNumX]->nodeIndex) // 아래쪽 체크
 			{
 				if (true == isNodeCreate)
 				{
@@ -731,11 +700,11 @@ bool JumpPointSearch::SearchLeftUp_CornerNode(AStarNodeInfo* parent, WORD index,
 	while (true)
 	{
 		// 왼쪽 위로 더이상 갈 수 없음
-		if (index % mTile_MaxNumX <= 0 || index < mTile_MaxNumX)
+		if (index % gTile_MaxNumX <= 0 || index < gTile_MaxNumX)
 			return false;
 
 		// 왼쪽 위 대각선 이동
-		index = (index - mTile_MaxNumX) - 1;
+		index = (index - gTile_MaxNumX) - 1;
 
 		if (tileList[index]->nodeIndex == BLOCK_INDEX)
 			return false;
@@ -754,13 +723,13 @@ bool JumpPointSearch::SearchLeftUp_CornerNode(AStarNodeInfo* parent, WORD index,
 		}
 
 		// 코너 찾기 한칸 위로 체크
-		if (index >= mTile_MaxNumX)
+		if (index >= gTile_MaxNumX)
 		{
-			findIndex = index - mTile_MaxNumX;
+			findIndex = index - gTile_MaxNumX;
 
 			// 위쪽 코너 체크
-			if (index % mTile_MaxNumX != mTile_MaxNumX - 1 &&  //오른쪽 체크
-				findIndex % mTile_MaxNumX != mTile_MaxNumX - 1) // 오른쪽 체크
+			if (index % gTile_MaxNumX != gTile_MaxNumX - 1 &&  //오른쪽 체크
+				findIndex % gTile_MaxNumX != gTile_MaxNumX - 1) // 오른쪽 체크
 			{
 				// 코너로 판단
 				if (BLOCK_INDEX == tileList[index + 1]->nodeIndex
@@ -776,17 +745,17 @@ bool JumpPointSearch::SearchLeftUp_CornerNode(AStarNodeInfo* parent, WORD index,
 		}
 		
 		// 코너 찾기 한칸 왼쪽 체크
-		if ((index % mTile_MaxNumX) > 0)
+		if ((index % gTile_MaxNumX) > 0)
 		{
 			findIndex = index - 1;
 
 			// 아래쪽 코너 체크
-			if (index / mTile_MaxNumX < mTile_MaxNumY - 1 && // 아래쪽 체크
-				findIndex / mTile_MaxNumX < mTile_MaxNumY - 1) // 아래쪽 체크
+			if (index / gTile_MaxNumX < gTile_MaxNumY - 1 && // 아래쪽 체크
+				findIndex / gTile_MaxNumX < gTile_MaxNumY - 1) // 아래쪽 체크
 			{
 				// 코너로 판단
-				if (BLOCK_INDEX == tileList[index + mTile_MaxNumX]->nodeIndex
-					&& NORMAL_INDEX >= tileList[findIndex + mTile_MaxNumX]->nodeIndex)
+				if (BLOCK_INDEX == tileList[index + gTile_MaxNumX]->nodeIndex
+					&& NORMAL_INDEX >= tileList[findIndex + gTile_MaxNumX]->nodeIndex)
 				{
 					node = CreateNode(parent, index, tileList);
 					if (node != nullptr)
@@ -825,7 +794,7 @@ bool JumpPointSearch::SearchRight_CornerNode(AStarNodeInfo* parent, WORD index, 
 	while (true)
 	{
 		// 오른쪽으로 더이상 갈 수 없음
-		if (index % mTile_MaxNumX == mTile_MaxNumX - 1)
+		if (index % gTile_MaxNumX == gTile_MaxNumX - 1)
 			return false;
 
 		// 오른쪽으로 이동
@@ -850,16 +819,16 @@ bool JumpPointSearch::SearchRight_CornerNode(AStarNodeInfo* parent, WORD index, 
 		}
 
 		// 오른쪽으로 코너 찾기
-		if (index % mTile_MaxNumX == mTile_MaxNumX - 1) // 오른쪽으로 더이상 갈 수 없음
+		if (index % gTile_MaxNumX == gTile_MaxNumX - 1) // 오른쪽으로 더이상 갈 수 없음
 			continue;
 
 		findIndex = index + 1;
 		// 위쪽 코너 체크
-		if (index >= mTile_MaxNumX && findIndex >= mTile_MaxNumX)
+		if (index >= gTile_MaxNumX && findIndex >= gTile_MaxNumX)
 		{
 			// 코너로 판단
-			if (BLOCK_INDEX == tileList[index - mTile_MaxNumX]->nodeIndex // 위쪽 체크
-				&& NORMAL_INDEX >= tileList[findIndex - mTile_MaxNumX]->nodeIndex) // 위쪽 체크
+			if (BLOCK_INDEX == tileList[index - gTile_MaxNumX]->nodeIndex // 위쪽 체크
+				&& NORMAL_INDEX >= tileList[findIndex - gTile_MaxNumX]->nodeIndex) // 위쪽 체크
 			{
 				if (true == isNodeCreate)
 				{
@@ -871,12 +840,12 @@ bool JumpPointSearch::SearchRight_CornerNode(AStarNodeInfo* parent, WORD index, 
 			}
 		}
 		// 아래쪽 코너 체크
-		if (index / mTile_MaxNumX < mTile_MaxNumY - 1
-			&& findIndex / mTile_MaxNumX < mTile_MaxNumY - 1)
+		if (index / gTile_MaxNumX < gTile_MaxNumY - 1
+			&& findIndex / gTile_MaxNumX < gTile_MaxNumY - 1)
 		{
 			// 코너로 판단
-			if (BLOCK_INDEX == tileList[index + mTile_MaxNumX]->nodeIndex // 아래쪽 체크
-				&& NORMAL_INDEX >= tileList[findIndex + mTile_MaxNumX]->nodeIndex) // 아래쪽 체크
+			if (BLOCK_INDEX == tileList[index + gTile_MaxNumX]->nodeIndex // 아래쪽 체크
+				&& NORMAL_INDEX >= tileList[findIndex + gTile_MaxNumX]->nodeIndex) // 아래쪽 체크
 			{
 				if (true == isNodeCreate)
 				{
@@ -900,11 +869,11 @@ bool JumpPointSearch::SearchRightUp_CornerNode(AStarNodeInfo* parent, WORD index
 	while (true)
 	{
 		// 오른쪽 위로 더이상 갈 수 없음
-		if (index % mTile_MaxNumX == mTile_MaxNumX - 1 || index < mTile_MaxNumX)
+		if (index % gTile_MaxNumX == gTile_MaxNumX - 1 || index < gTile_MaxNumX)
 			return false;
 
 		// 오른쪽 위 대각선 이동
-		index = (index - mTile_MaxNumX) + 1;
+		index = (index - gTile_MaxNumX) + 1;
 
 		if (tileList[index]->nodeIndex == BLOCK_INDEX)
 			return false;
@@ -923,13 +892,13 @@ bool JumpPointSearch::SearchRightUp_CornerNode(AStarNodeInfo* parent, WORD index
 		}
 
 		// 코너 찾기 한칸 위로 체크
-		if (index >= mTile_MaxNumX)
+		if (index >= gTile_MaxNumX)
 		{
-			findIndex = index - mTile_MaxNumX;
+			findIndex = index - gTile_MaxNumX;
 
 			// 왼쪽 코너 체크
-			if (index % mTile_MaxNumX > 0 &&  //왼쪽 체크
-				findIndex % mTile_MaxNumX > 0) // 왼쪽 체크
+			if (index % gTile_MaxNumX > 0 &&  //왼쪽 체크
+				findIndex % gTile_MaxNumX > 0) // 왼쪽 체크
 			{
 				// 코너로 판단
 				if (BLOCK_INDEX == tileList[index - 1]->nodeIndex
@@ -945,16 +914,16 @@ bool JumpPointSearch::SearchRightUp_CornerNode(AStarNodeInfo* parent, WORD index
 		}
 		
 		// 코너 찾기 한칸 오른쪽 체크
-		if (index % mTile_MaxNumX != mTile_MaxNumX - 1)
+		if (index % gTile_MaxNumX != gTile_MaxNumX - 1)
 		{
 			findIndex = index + 1;
 			// 아래쪽 코너 체크
-			if (index / mTile_MaxNumX < mTile_MaxNumY - 1 && // 아래쪽 체크
-				findIndex / mTile_MaxNumX < mTile_MaxNumY - 1) // 아래쪽 체크
+			if (index / gTile_MaxNumX < gTile_MaxNumY - 1 && // 아래쪽 체크
+				findIndex / gTile_MaxNumX < gTile_MaxNumY - 1) // 아래쪽 체크
 			{
 				// 코너로 판단
-				if (BLOCK_INDEX == tileList[index + mTile_MaxNumX]->nodeIndex
-					&& NORMAL_INDEX >= tileList[findIndex + mTile_MaxNumX]->nodeIndex)
+				if (BLOCK_INDEX == tileList[index + gTile_MaxNumX]->nodeIndex
+					&& NORMAL_INDEX >= tileList[findIndex + gTile_MaxNumX]->nodeIndex)
 				{
 					node = CreateNode(parent, index, tileList);
 					if (node != nullptr)
@@ -994,11 +963,11 @@ bool JumpPointSearch::SearchDown_CornerNode(AStarNodeInfo* parent, WORD index, v
 	while (true)
 	{
 		// 아래쪽으로 더이상 갈 수 없음
-		if ((index / mTile_MaxNumX) >= mTile_MaxNumY - 1)
+		if ((index / gTile_MaxNumX) >= gTile_MaxNumY - 1)
 			return false;
 
 		// 오른쪽으로 이동
-		index = index + mTile_MaxNumX;
+		index = index + gTile_MaxNumX;
 
 		if (tileList[index]->nodeIndex == BLOCK_INDEX)
 			return false;
@@ -1019,14 +988,14 @@ bool JumpPointSearch::SearchDown_CornerNode(AStarNodeInfo* parent, WORD index, v
 		}
 
 		// 아래쪽으로 코너 찾기
-		if ((index / mTile_MaxNumX) >= mTile_MaxNumY - 1) // 아래쪽으로 더이상 갈 수 없음
+		if ((index / gTile_MaxNumX) >= gTile_MaxNumY - 1) // 아래쪽으로 더이상 갈 수 없음
 			continue;
 
-		findIndex = index + mTile_MaxNumX;
+		findIndex = index + gTile_MaxNumX;
 
 		// 왼쪽 코너 체크
-		if (index % mTile_MaxNumX > 0 
-			&& findIndex % mTile_MaxNumX > 0)
+		if (index % gTile_MaxNumX > 0 
+			&& findIndex % gTile_MaxNumX > 0)
 		{
 			// 코너로 판단
 			if (BLOCK_INDEX == tileList[index - 1]->nodeIndex // 왼쪽 체크
@@ -1042,8 +1011,8 @@ bool JumpPointSearch::SearchDown_CornerNode(AStarNodeInfo* parent, WORD index, v
 			}
 		}
 		// 오른쪽 코너 체크
-		if (index % mTile_MaxNumX != mTile_MaxNumX - 1
-			&& findIndex % mTile_MaxNumX != mTile_MaxNumX - 1)
+		if (index % gTile_MaxNumX != gTile_MaxNumX - 1
+			&& findIndex % gTile_MaxNumX != gTile_MaxNumX - 1)
 		{
 			// 코너로 판단
 			if (BLOCK_INDEX == tileList[index + 1]->nodeIndex // 오른쪽 체크
@@ -1071,11 +1040,11 @@ bool JumpPointSearch::SearchLeftDown_CornerNode(AStarNodeInfo* parent, WORD inde
 	while (true)
 	{
 		// 왼쪽 아래로 더이상 갈 수 없음
-		if ((index % mTile_MaxNumX) <= 0 || (index / mTile_MaxNumX) >= mTile_MaxNumY - 1)
+		if ((index % gTile_MaxNumX) <= 0 || (index / gTile_MaxNumX) >= gTile_MaxNumY - 1)
 			return false;
 
 		// 왼쪽 아래 대각선 이동
-		index = (index + mTile_MaxNumX) - 1;
+		index = (index + gTile_MaxNumX) - 1;
 
 		if (tileList[index]->nodeIndex == BLOCK_INDEX)
 			return false;
@@ -1094,17 +1063,17 @@ bool JumpPointSearch::SearchLeftDown_CornerNode(AStarNodeInfo* parent, WORD inde
 		}
 
 		// 코너 찾기 한칸 왼쪽 체크
-		if ((index % mTile_MaxNumX) > 0)
+		if ((index % gTile_MaxNumX) > 0)
 		{
 			findIndex = index - 1;
 
 			// 위쪽 코너 체크
-			if (index >= mTile_MaxNumX && // 위쪽 체크
-				findIndex >= mTile_MaxNumX) // 위쪽 체크
+			if (index >= gTile_MaxNumX && // 위쪽 체크
+				findIndex >= gTile_MaxNumX) // 위쪽 체크
 			{
 				// 코너로 판단
-				if (BLOCK_INDEX == tileList[index - mTile_MaxNumX]->nodeIndex
-					&& NORMAL_INDEX >= tileList[findIndex - mTile_MaxNumX]->nodeIndex)
+				if (BLOCK_INDEX == tileList[index - gTile_MaxNumX]->nodeIndex
+					&& NORMAL_INDEX >= tileList[findIndex - gTile_MaxNumX]->nodeIndex)
 				{
 					node = CreateNode(parent, index, tileList);
 					if (node != nullptr)
@@ -1116,13 +1085,13 @@ bool JumpPointSearch::SearchLeftDown_CornerNode(AStarNodeInfo* parent, WORD inde
 		}
 
 		// 코너 찾기 아래로 체크
-		if (index / mTile_MaxNumX < mTile_MaxNumY - 1)
+		if (index / gTile_MaxNumX < gTile_MaxNumY - 1)
 		{
-			findIndex = index + mTile_MaxNumX;
+			findIndex = index + gTile_MaxNumX;
 
 			// 위쪽 코너 체크
-			if (index % mTile_MaxNumX != mTile_MaxNumX - 1 &&  //오른쪽 체크
-				findIndex % mTile_MaxNumX != mTile_MaxNumX - 1) // 오른쪽 체크
+			if (index % gTile_MaxNumX != gTile_MaxNumX - 1 &&  //오른쪽 체크
+				findIndex % gTile_MaxNumX != gTile_MaxNumX - 1) // 오른쪽 체크
 			{
 				// 코너로 판단
 				if (BLOCK_INDEX == tileList[index + 1]->nodeIndex
@@ -1169,11 +1138,11 @@ bool JumpPointSearch::SearchRightDown_CornerNode(AStarNodeInfo* parent, WORD ind
 	while (true)
 	{
 		// 오른쪽 아래로 더이상 갈 수 없음
-		if ((index % mTile_MaxNumX) == mTile_MaxNumX -1 || (index / mTile_MaxNumX) >= mTile_MaxNumY - 1)
+		if ((index % gTile_MaxNumX) == gTile_MaxNumX -1 || (index / gTile_MaxNumX) >= gTile_MaxNumY - 1)
 			break;
 
 		// 왼쪽 아래 대각선 이동
-		index = (index + mTile_MaxNumX) + 1;
+		index = (index + gTile_MaxNumX) + 1;
 
 		if (tileList[index]->nodeIndex == BLOCK_INDEX)
 			break;
@@ -1192,17 +1161,17 @@ bool JumpPointSearch::SearchRightDown_CornerNode(AStarNodeInfo* parent, WORD ind
 		}
 
 		// 코너 찾기 한칸 오른쪽 체크
-		if ((index % mTile_MaxNumX) != mTile_MaxNumX - 1)
+		if ((index % gTile_MaxNumX) != gTile_MaxNumX - 1)
 		{
 			findIndex = index + 1;
 
 			// 위쪽 코너 체크
-			if (index >= mTile_MaxNumX && // 위쪽 체크
-				findIndex >= mTile_MaxNumX) // 위쪽 체크
+			if (index >= gTile_MaxNumX && // 위쪽 체크
+				findIndex >= gTile_MaxNumX) // 위쪽 체크
 			{
 				// 코너로 판단
-				if (BLOCK_INDEX == tileList[index - mTile_MaxNumX]->nodeIndex
-					&& NORMAL_INDEX >= tileList[findIndex - mTile_MaxNumX]->nodeIndex)
+				if (BLOCK_INDEX == tileList[index - gTile_MaxNumX]->nodeIndex
+					&& NORMAL_INDEX >= tileList[findIndex - gTile_MaxNumX]->nodeIndex)
 				{
 					node = CreateNode(parent, index, tileList);
 					if (node != nullptr)
@@ -1214,13 +1183,13 @@ bool JumpPointSearch::SearchRightDown_CornerNode(AStarNodeInfo* parent, WORD ind
 		}
 
 		// 코너 찾기 아래로 체크
-		if (index / mTile_MaxNumX < mTile_MaxNumY - 1)
+		if (index / gTile_MaxNumX < gTile_MaxNumY - 1)
 		{
-			findIndex = index + mTile_MaxNumX;
+			findIndex = index + gTile_MaxNumX;
 
 			// 위쪽 코너 체크
-			if (index % mTile_MaxNumX > 0 &&  //왼쪽 체크
-				findIndex % mTile_MaxNumX > 0) //왼쪽 체크
+			if (index % gTile_MaxNumX > 0 &&  //왼쪽 체크
+				findIndex % gTile_MaxNumX > 0) //왼쪽 체크
 			{
 				// 코너로 판단
 				if (BLOCK_INDEX == tileList[index - 1]->nodeIndex
@@ -1257,11 +1226,11 @@ bool JumpPointSearch::SearchRightDown_CornerNode(AStarNodeInfo* parent, WORD ind
 	//while (true)
 	//{
 	//	// 오른쪽 아래로 더이상 갈 수 없음
-	//	if ((originaIndex % mTile_MaxNumX) == mTile_MaxNumX - 1 || (originaIndex / mTile_MaxNumX) >= mTile_MaxNumY - 1)
+	//	if ((originaIndex % gTile_MaxNumX) == gTile_MaxNumX - 1 || (originaIndex / gTile_MaxNumX) >= mTile_MaxNumY - 1)
 	//		return false;
 
 	//	// 왼쪽 아래 대각선 이동
-	//	originaIndex = (originaIndex + mTile_MaxNumX) + 1;
+	//	originaIndex = (originaIndex + gTile_MaxNumX) + 1;
 
 	//	if (tileList[originaIndex]->nodeIndex == BLOCK_INDEX)
 	//		return false;
@@ -1325,9 +1294,11 @@ void JumpPointSearch::RandomColorSetting()
 bool JumpPointSearch::CalBestRoadSpaec(AStarNodeInfo* node, const vector<RectInfo*>& tileList)
 {
 	int beforeIndex = -1;
-	int index = 0;
+	WORD xIndex = 0;
+	WORD yIndex = 0;
+	//int index = 0;
 	WORD finishCount = 0;
-	vector<POINT> bresenhamPoint;
+	list<WORD> bresenhamIndex;
 	AStarNodeInfo* finishNode = node;
 	AStarNodeInfo* childNode = finishNode->parent;
 	AStarNodeInfo* tempNode = nullptr;
@@ -1340,17 +1311,23 @@ bool JumpPointSearch::CalBestRoadSpaec(AStarNodeInfo* node, const vector<RectInf
 	{
 		isBlock = false;
 		beforeIndex = -1;
-		bresenhamPoint.clear();
-		mBresenham->Cal_StraightLine(&bresenhamPoint, tileList[childNode->index]->point,  tileList[finishNode->index]->point);
+		bresenhamIndex.clear();
+		mBresenham->Cal_StraightLine(&bresenhamIndex, childNode->index, finishNode->index);
+		wprintf(L"startPointIndex:%d endPointIndex:%d \n", childNode->index,finishNode->index);
 
-		for (int i = 0; i < bresenhamPoint.size(); ++i)
+		for (WORD index : bresenhamIndex)
 		{
-			index = (((bresenhamPoint[i].y / RECT_SIZE) - 1) * mTile_MaxNumX) + ((bresenhamPoint[i].x / RECT_SIZE) - 1);
-			//index -= 1;
+			wprintf(L"bresenhamIndex:%d\n", index);
+			//mVisualization->DrawBresenhamLine(tileList[index]->point, RGB(0, 0, 255));
 			if (beforeIndex != index)
 			{
 				beforeIndex = index;
 				// 장애물 노드가 있으면 바로 무한루프를 정지하고 finishNode 갱신 및 노드 포인트 생성
+				if (index >= gTile_MaxNumX * gTile_MaxNumY)
+				{
+					wprintf(L"index:%d\n", index);
+				}
+
 				if (tileList[index]->nodeIndex == BLOCK_INDEX)
 				{
 					isBlock = true;
@@ -1386,22 +1363,10 @@ bool JumpPointSearch::CalBestRoadSpaec(AStarNodeInfo* node, const vector<RectInf
 				childNode = childNode->parent;
 			}
 		}
-		
-		// 경로를 생성해준다.
-		//if (finishParent->parent == nullptr)
-		//{
-		//	wprintf(L"finishCount:%d\n", finishCount);
-		//	//Visualization AStar 길찾기 경로 표시
-		//	//mVisualization->RenderBitBlt();
-		//	break;
-		//}
-
-		//parent = parent->parent;
-		//++finishCount;
 	}
 
 	BestRoadRender(tileList);
-
+	//mVisualization->RenderBitBlt();
 	return true;
 }
 
