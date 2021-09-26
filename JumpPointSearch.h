@@ -73,12 +73,12 @@ private:
 	void SearchIndexRender(const WORD index, vector<RectInfo*>& tileList);
 	void RandomColorSetting();
 	bool CalBestRoadSpaec(AStarNodeInfo* node, const vector<RectInfo*>& tileList);
-	void BestRoadRender(const vector<RectInfo*>& tileList);
+	void BestRoadRender();
 
 private:
 	list<AStarNodeInfo*> mOpenList;
 	list<AStarNodeInfo*> mCloseList;
-	stack<AStarNodeInfo*> mBestRoadSpace;
+	stack<RectInfo*> mBestRoadSpace;
 
 private:
 	WORD mStartIndex = 0;

@@ -8,10 +8,12 @@ void Bresenham::Cal_StraightLine(list<WORD>* outStraightIndex,
 	WORD deltaY = 0;
 	bool isXPositive = false;
 	bool isYPositive = false;
-	WORD increaseAxis = 0;
+	float increaseAxis = 0.f;
 	IndexInfo start_IndexInfo;
 	IndexInfo end_IndexInfo;
 	WORD index = 0;
+	//WORD thresh = 0;
+	float thresh = 0.f;
 
 	start_IndexInfo.yIndex = startIndex / gTile_MaxNumX;
 	start_IndexInfo.xIndex = startIndex - (start_IndexInfo.yIndex * gTile_MaxNumX);
@@ -21,6 +23,7 @@ void Bresenham::Cal_StraightLine(list<WORD>* outStraightIndex,
 	deltaX = abs(end_IndexInfo.xIndex - start_IndexInfo.xIndex);
 	deltaY = abs(end_IndexInfo.yIndex - start_IndexInfo.yIndex);
 
+	// 시작점과 목표지점 차이를 구하여 음수 혹은 양수방향 진행 상태 확인
 	if (end_IndexInfo.xIndex - start_IndexInfo.xIndex < 0)
 	{
 		if(start_IndexInfo.xIndex < end_IndexInfo.xIndex)
@@ -30,6 +33,7 @@ void Bresenham::Cal_StraightLine(list<WORD>* outStraightIndex,
 			isXPositive = false;
 		}
 	}
+	else
 	{
 		if (start_IndexInfo.xIndex > end_IndexInfo.xIndex)
 			isXPositive = false;
@@ -39,24 +43,27 @@ void Bresenham::Cal_StraightLine(list<WORD>* outStraightIndex,
 		}
 	}
 
+	// 시작점과 목표지점 차이를 구하여 음수 혹은 양수방향 진행 상태 확인
 	if (end_IndexInfo.yIndex - start_IndexInfo.yIndex < 0)
 	{
-		if (start_IndexInfo.yIndex < end_IndexInfo.yIndex)
-			isYPositive = false;
-		else
-			isYPositive = true;
+		isYPositive = false;
 	}
 	else
 	{
-		if (start_IndexInfo.yIndex > end_IndexInfo.yIndex)
-			isYPositive = false;
-		else
-			isYPositive = true;
+		isYPositive = true;
 	}
 
 	if (deltaX > deltaY)
 	{
-		//increaseAxis += (deltaX / 2);
+		/*if (0 == deltaX % 2)
+			thresh = (deltaX / 2);
+		else
+		{
+			thresh = deltaX;*/
+		//	increaseAxis += (deltaX / 2);
+		//}
+		thresh = (float)(deltaX / 2);
+
 		for (int i = 0; i < deltaX; ++i)
 		{
 			if (true == isXPositive)
@@ -71,13 +78,14 @@ void Bresenham::Cal_StraightLine(list<WORD>* outStraightIndex,
 			if (0 == deltaY)
 			{
 				index = start_IndexInfo.xIndex + (start_IndexInfo.yIndex * gTile_MaxNumX);
-				outStraightIndex->emplace_back(index);
+				if(startIndex != index && endIndex != index)
+					outStraightIndex->emplace_back(index);
 				continue;
 			}
 
 			increaseAxis += deltaY;
 
-			if (increaseAxis >= deltaX)
+			if (increaseAxis > thresh)
 			{
 				if (true == isYPositive)
 				{
@@ -87,14 +95,25 @@ void Bresenham::Cal_StraightLine(list<WORD>* outStraightIndex,
 				{
 					--start_IndexInfo.yIndex;
 				}
-				increaseAxis -= deltaX;
-				index = start_IndexInfo.xIndex + (start_IndexInfo.yIndex * gTile_MaxNumX);
+				increaseAxis -= deltaX;			
+			}
+			index = start_IndexInfo.xIndex + (start_IndexInfo.yIndex * gTile_MaxNumX);
+			if (startIndex != index && endIndex != index)
+			{	
 				outStraightIndex->emplace_back(index);
 			}
 		}
 	}
 	else
 	{
+	/*	if (0 == deltaY % 2)
+			thresh = (deltaY / 2);
+		else
+		{
+			thresh = deltaY;*/
+			//increaseAxis += (deltaY / 2);
+		//}
+		thresh = (float)(deltaY / 2);
 		//increaseAxis += (deltaY / 2);
 		for (int i = 0; i < deltaY; ++i)
 		{
@@ -110,11 +129,12 @@ void Bresenham::Cal_StraightLine(list<WORD>* outStraightIndex,
 			if (0 == deltaX)
 			{
 				index = start_IndexInfo.xIndex + (start_IndexInfo.yIndex * gTile_MaxNumX);
-				outStraightIndex->emplace_back(index);
+				if (startIndex != index && endIndex != index)
+					outStraightIndex->emplace_back(index);
 				continue;
 			}
 			increaseAxis += deltaX;
-			if (increaseAxis >= deltaY)
+			if (increaseAxis > thresh)
 			{
 				if (true == isXPositive)
 				{
@@ -125,7 +145,11 @@ void Bresenham::Cal_StraightLine(list<WORD>* outStraightIndex,
 					--start_IndexInfo.xIndex;
 				}
 				increaseAxis -= deltaY;
-				index = start_IndexInfo.xIndex + (start_IndexInfo.yIndex * gTile_MaxNumX);
+						
+			}
+			index = start_IndexInfo.xIndex + (start_IndexInfo.yIndex * gTile_MaxNumX);
+			if (startIndex != index && endIndex != index)
+			{
 				outStraightIndex->emplace_back(index);
 			}
 		}

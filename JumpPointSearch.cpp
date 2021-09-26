@@ -1305,7 +1305,7 @@ bool JumpPointSearch::CalBestRoadSpaec(AStarNodeInfo* node, const vector<RectInf
 	bool isBlock = false;
 	
 	_ASSERT(finishNode != nullptr);
-	mBestRoadSpace.emplace(finishNode);
+	mBestRoadSpace.emplace(tileList[finishNode->index]);
 
 	while (childNode != nullptr && finishNode != nullptr)
 	{
@@ -1325,7 +1325,7 @@ bool JumpPointSearch::CalBestRoadSpaec(AStarNodeInfo* node, const vector<RectInf
 				// 장애물 노드가 있으면 바로 무한루프를 정지하고 finishNode 갱신 및 노드 포인트 생성
 				if (index >= gTile_MaxNumX * gTile_MaxNumY)
 				{
-					wprintf(L"index:%d\n", index);
+					wprintf(L"overflow_index:%d\n", index);
 				}
 
 				if (tileList[index]->nodeIndex == BLOCK_INDEX)
@@ -1334,19 +1334,29 @@ bool JumpPointSearch::CalBestRoadSpaec(AStarNodeInfo* node, const vector<RectInf
 					if (tempNode != nullptr) // 정상적인 길이 이전에 있었으면 그 노드를 finishNode 로 갱신
 					{
 						finishNode = tempNode;
-						mBestRoadSpace.emplace(finishNode);
+						mBestRoadSpace.emplace(tileList[finishNode->index]);
 						tempNode = nullptr;
 					}
 					else
 					{
 						finishNode = finishNode->parent;
+						wprintf(L"finishNodeParent:%d\n", finishNode->index);
 					}
 					
 					if (finishNode == childNode)
+					{
+						wprintf(L"finishNode childNode Same finishNode:%d childNode:%d\n", finishNode->index, childNode->index);
 						childNode = finishNode->parent;
+						
+					}
 					break;
 				}
 			}
+		}
+
+		for (WORD index : bresenhamIndex)
+		{
+			//mBestRoadSpace.emplace(tileList[index]);
 		}
 
 		// 점과 점사이에 BlockNode가 없으면 다음 노드와 연결하여 이용 가능한지 확인, BlockNode가 있으면 바로 그 지점에 노드 포인트 생성.
@@ -1359,22 +1369,22 @@ bool JumpPointSearch::CalBestRoadSpaec(AStarNodeInfo* node, const vector<RectInf
 			}
 			else
 			{
-				mBestRoadSpace.emplace(childNode);
+				mBestRoadSpace.emplace(tileList[childNode->index]);
 				childNode = childNode->parent;
 			}
 		}
 	}
 
-	BestRoadRender(tileList);
+	BestRoadRender();
 	//mVisualization->RenderBitBlt();
 	return true;
 }
 
-void JumpPointSearch::BestRoadRender(const vector<RectInfo*>& tileList)
+void JumpPointSearch::BestRoadRender()
 {
 	while (mBestRoadSpace.empty() == false)
 	{
-		mVisualization->DrawBresenhamLine(tileList[mBestRoadSpace.top()->index]->point, RGB(0, 0, 255));
+		mVisualization->DrawBresenhamLine(mBestRoadSpace.top()->point, RGB(0, 0, 255));
 		mBestRoadSpace.pop();
 	}
 	mVisualization->RenderBitBlt();
